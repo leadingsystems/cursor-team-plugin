@@ -21,12 +21,15 @@ und verstanden sein.
   unklar/nicht sicher feststellbar: stoppen und
   Operator fragen.
 - `A => !B` = Wenn A gilt, B nicht tun.
+- `!A => B` = Wenn A nicht gilt, dann B ausführen.
 - `A & B` = A und B gelten gleichzeitig.
 - `A | B` = Genau eine der Alternativen ist
   maßgeblich, je nach Fall.
 - `ctx:A` = Regel gilt im Kontext A.
 - `req:A` = A ist erforderliche Voraussetzung.
-- `miss:A => STOP` = Fehlt A, stoppen und anfordern.
+- `miss:A => B` = Fehlt A, dann B ausführen.
+  `miss:A => STOP` ist der häufigste Spezialfall
+  (stoppen und anfordern).
 - `default:A` = A gilt nur, wenn keine speziellere
   Regel greift.
 
@@ -47,19 +50,33 @@ bereits bewerteter Zustand:
   `Vorprüfung nicht durchführbar => STOP` --
   definitiver Zustand, daher `A => B`.
 
-## Bindungsstärke und Geltungsbereich
+## Trennzeichen
 
-- `=> !` negiert alles bis zum nächsten `;` oder
-  Zeilenende.
-- `|` drückt erlaubte Alternativen aus und darf nur
-  in positiven Kontexten stehen
-  (z. B. "Shell | Read" = nimm eins davon).
-- `|` innerhalb von `=> !` ist verboten, da die
-  Bindung mehrdeutig wird. Stattdessen mehrere
-  `=> !`-Ausdrücke mit `;` trennen:
-  `=> !A; => !B`.
-- `&` innerhalb von `=> !` ist erlaubt und bedeutet:
-  beides gleichzeitig verboten.
+- `;` = Trenner zwischen Ausdrücken in einer Zeile.
+
+## Zusammenspiel `req:` und `miss:`
+
+- `req:A` = deklarativ ("A wird benötigt"), keine
+  implizite Konsequenz.
+- `miss:A => B` = operativ ("Fehlt A, dann B").
+- Kombination: `req:A` + `miss:A => STOP`.
+  Beide dürfen auch einzeln stehen.
+
+## Klammerung
+
+- `()` bei mehrdeutiger Operanden-Zuordnung.
+- Klar: `(!A & B) => C`; `A => (B => C)`.
+- `A => B & C` -- nur bei offensichtlicher
+  Zuordnung ohne Klammern erlaubt.
+- `A => B => C` verboten; auflösen:
+  `A => B; B => C` oder `A => (B => C)`.
+
+## Geltungsbereich von `=> !`
+
+- `=> !` negiert bis `;` oder Zeilenende.
+- `|` nur in positiven Kontexten (`Shell | Read`);
+  in `=> !` verboten; auflösen: `=> !A; => !B`.
+- `&` in `=> !` erlaubt (beides verboten).
 
 ## Interpretationsregeln
 
