@@ -1,6 +1,6 @@
 {
-  "name": "ls-agent-rules",
-  "displayName": "LS Agent Rules",
+  "name": "ls-team-plugin",
+  "displayName": "LS Team Plugin",
   "version": "0.0.0",
   "description": "Leading Systems Agent Rules and Development Skills",
   "author": {

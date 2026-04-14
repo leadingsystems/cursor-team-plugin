@@ -26,7 +26,7 @@ cursor-team-plugin/
         references/
           *.md               (Referenzdaten)
   plugins/
-    ls-agent-rules-X.Y.Z/   (versionierte Snapshots)
+    ls-team-plugin-X.Y.Z/   (versionierte Snapshots)
   .github/
     workflows/
       release.yml            (Release-Automatisierung)

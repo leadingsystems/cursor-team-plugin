@@ -19,7 +19,7 @@ cursor-team-plugin/
         SKILL.md
         references/
   plugins/                   Versionierte Snapshots (vom Release-Prozess erzeugt)
-    ls-agent-rules-X.Y.Z/
+    ls-team-plugin-X.Y.Z/
   .github/
     workflows/
       release.yml            Release-Automatisierung
@@ -46,7 +46,7 @@ Build- oder Konvertierungsschritte nötig.
 2. Version im Semver-Format angeben (z. B. `0.1.0`).
 3. Die Action:
    - Kopiert `source/` nach
-     `plugins/ls-agent-rules-<version>/`.
+     `plugins/ls-team-plugin-<version>/`.
    - Aktualisiert `plugin.json` mit Version und Namen.
    - Ergänzt den Eintrag in `marketplace.json`.
    - Erstellt Commit, Tag und GitHub Release.
@@ -55,7 +55,7 @@ Build- oder Konvertierungsschritte nötig.
 
 Jedes Release erzeugt ein eigenständiges Plugin mit
 Versionsnummer im Namen (z. B.
-`ls-agent-rules-0.1.0`). Im Team Marketplace können
+`ls-team-plugin-0.1.0`). Im Team Marketplace können
 Operators über Distribution Groups einer bestimmten
 Version zugeordnet werden.
 
@@ -65,7 +65,7 @@ Für lokale Tests das `source/`-Verzeichnis als
 Plugin registrieren:
 
 ```
-~/.cursor/plugins/local/ls-agent-rules -> <repo>/source
+~/.cursor/plugins/local/ls-team-plugin -> <repo>/source
 ```
 
 Danach Cursor neu starten oder "Developer: Reload
