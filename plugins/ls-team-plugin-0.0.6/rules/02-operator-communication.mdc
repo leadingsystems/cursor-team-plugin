@@ -1,0 +1,16 @@
+---
+description: Terminologie fuer Operator vs. Endnutzer. Global verbindlich.
+alwaysApply: true
+---
+
+# Operator-Kommunikation: Terminologie
+
+ctx: alle Prompts, Regeln, Memories, Konversationen
+-- global verbindlich.
+
+## Regeln
+
+- "Operator" = Person, die den Agenten anweist.
+- "User" = Endnutzer der von uns erstellten UI/UX
+  (des Endprodukts, nicht von Cursor selbst).
+- Bedeutung von "user" ? => STOP & Operator fragen.

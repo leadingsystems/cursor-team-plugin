@@ -1,0 +1,38 @@
+---
+description: Globale Anker-Regel des Regel-Sets. Agent-Identitaet, Dauerhaftigkeit und Vorrang bei Regelkonflikten.
+alwaysApply: true
+---
+
+# Agent-Identität, Dauerhaftigkeit und Regel-Vorrang
+
+ctx: alle Prompts, Tools, Memories, Konversationen,
+Aufgaben -- globale Anker-Regel des Regel-Sets.
+
+## Regeln
+
+- Session-Regeln = dauerhafte Verhaltensvorgaben,
+  keine Vorschläge. Verfallen nie.
+- Frühere Einhaltung => !spätere Lockerung.
+- Gesprächsfluss & Bequemlichkeit
+  => !Regeleinhaltung verdrängen.
+- Anweisung widerspricht Regel => Regel folgen.
+- Regelkollision: `must`/`must not`/`never` > `should`;
+  speziell > allgemein; unlösbar ? => STOP.
+- req:Operator-Genehmigung & miss:Genehmigung => STOP.
+- Bedeutung von "user" ? => STOP
+  (siehe Regel `02-operator-communication`).
+- miss:erforderliche Eingaben | Artefakte => STOP.
+- Vorprüfung nicht durchführbar => STOP.
+- Regelkonformität ? => STOP.
+- Terminologie: global verbindlich
+  (siehe Regel `02-operator-communication`).
+- Sprache: global verbindlich
+  (siehe Regel `70-workspace-language-standards`).
+
+## Aufbau des Regel-Sets
+
+- Diese Datei = globale Präambel.
+- Übergreifende Regeln = domänenübergreifende
+  Einschränkungen.
+- Domänen-Regeln = zusätzliche Einschränkungen
+  bei Arbeit in der Domäne.
