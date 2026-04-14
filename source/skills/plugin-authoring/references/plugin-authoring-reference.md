@@ -42,6 +42,7 @@ cursor-team-plugin/
 - Dateinamen: zweistelliger Präfix + kebab-case
   (z. B. `10-standard-quotation-marks.mdc`).
 - Reihenfolge: Präfix bestimmt Ladereihenfolge.
+- Stabile Nummern; Churn vermeiden.
 - Inhalt: umsetzbare Aussagen in Kurzsyntax.
   => !vage Ratschläge.
 
@@ -92,6 +93,13 @@ ctx: Geltungsbereich.
   `references/...` lesen und befolgen.
 ```
 
+## Entscheidung: Rule oder Skill?
+
+- Faustregel: Braucht der Agent das Wissen, bevor er
+  überhaupt anfängt zu denken? => Rule.
+  Braucht er es erst, wenn ein bestimmter Kontext
+  vorliegt? => Skill.
+
 ## Stil
 
 - Umsetzbare "must/should"-Aussagen; => !vage Ratschläge.
@@ -116,7 +124,10 @@ ctx: Geltungsbereich.
 ## Qualitäts-Checkliste vor Commit
 
 - Frontmatter vorhanden und korrekt.
+- H1-Titel vorhanden und beschreibend.
 - Description vorhanden und beschreibend.
+- Rule in `source/rules/` mit numerischem Präfix;
+  Skill im eigenen Verzeichnis unter `source/skills/`.
 - Markdown-Regeln eingehalten.
 - Beispiele mit korrekten Code-Blöcken und Sprach-Tags.
 - Keine redundanten Vorgaben.
