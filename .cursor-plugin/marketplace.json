@@ -1,0 +1,10 @@
+{
+  "name": "ls-agent-rules",
+  "owner": {
+    "name": "Leading Systems"
+  },
+  "metadata": {
+    "description": "Leading Systems Agent Rules and Skills"
+  },
+  "plugins": []
+}

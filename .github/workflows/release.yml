@@ -1,0 +1,83 @@
+name: Release Plugin Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (z. B. 0.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate version format
+        run: |
+          if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Error: Version must be in semver format (e.g. 0.1.0)"
+            exit 1
+          fi
+
+      - name: Check plugin does not already exist
+        run: |
+          PLUGIN_DIR="plugins/ls-agent-rules-${{ inputs.version }}"
+          if [ -d "$PLUGIN_DIR" ]; then
+            echo "Error: Plugin directory $PLUGIN_DIR already exists"
+            exit 1
+          fi
+
+      - name: Copy source to versioned plugin directory
+        run: |
+          PLUGIN_DIR="plugins/ls-agent-rules-${{ inputs.version }}"
+          cp -r source "$PLUGIN_DIR"
+
+      - name: Update version in plugin.json
+        run: |
+          PLUGIN_JSON="plugins/ls-agent-rules-${{ inputs.version }}/.cursor-plugin/plugin.json"
+          PLUGIN_NAME="ls-agent-rules-${{ inputs.version }}"
+          jq --arg ver "${{ inputs.version }}" --arg name "$PLUGIN_NAME" \
+            '.version = $ver | .name = $name' \
+            "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
+
+      - name: Update marketplace.json
+        run: |
+          MARKETPLACE=".cursor-plugin/marketplace.json"
+          PLUGIN_NAME="ls-agent-rules-${{ inputs.version }}"
+          PLUGIN_SOURCE="./plugins/ls-agent-rules-${{ inputs.version }}"
+          PLUGIN_DESC="Agent Rules v${{ inputs.version }}"
+          jq --arg name "$PLUGIN_NAME" \
+             --arg source "$PLUGIN_SOURCE" \
+             --arg desc "$PLUGIN_DESC" \
+            '.plugins += [{"name": $name, "source": $source, "description": $desc}]' \
+            "$MARKETPLACE" > tmp.json && mv tmp.json "$MARKETPLACE"
+
+      - name: Commit release artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add plugins/ .cursor-plugin/marketplace.json
+          git commit -m "Release ls-agent-rules-${{ inputs.version }}"
+
+      - name: Create tag
+        run: |
+          git tag "v${{ inputs.version }}"
+
+      - name: Push commit and tag
+        run: |
+          git push origin HEAD
+          git push origin "v${{ inputs.version }}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ inputs.version }}" \
+            --title "v${{ inputs.version }}" \
+            --generate-notes

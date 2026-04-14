@@ -1,0 +1,11 @@
+{
+  "name": "ls-agent-rules",
+  "displayName": "LS Agent Rules",
+  "version": "0.0.0",
+  "description": "Leading Systems Agent Rules and Development Skills",
+  "author": {
+    "name": "Leading Systems"
+  },
+  "license": "proprietary",
+  "keywords": ["contao", "php", "lsce", "lscss", "leading-systems"]
+}
