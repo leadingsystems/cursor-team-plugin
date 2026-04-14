@@ -1,0 +1,24 @@
+---
+description: Markdown-Grundlagen fuer alle Markdown-Dateien im Workspace.
+alwaysApply: true
+---
+
+# Markdown-Grundlagen
+
+ctx: Alle Markdown-Dateien im Workspace und zugehörigen
+Projekten. Projektspezifische Konventionen zusätzlich
+anwenden; strengere Regel > allgemeinere bei Konflikt.
+
+## Regeln
+
+- ATX-Überschriften: genau eine `#`-H1, dann `##`, `###`.
+- Zeilenlänge max. 90 Zeichen (Code-Blöcke ausgenommen).
+- Kurze Absätze; Aufzählungen für Kernpunkte.
+- Datei-/Verzeichnis-/Klassen-/Funktionsnamen in Backticks.
+- Code-Blöcke: abgegrenzt, Sprach-Tag wo sinnvoll.
+  - Triple-Backticks nie einrücken (Spalte 0).
+  - Leerzeile vor & nach jedem Code-Block.
+  - Keine Zeilennummern im Code-Inhalt.
+- `-` für Aufzählungspunkte; Einrückung einheitlich.
+- Links aussagekräftig; => !bloße URLs.
+  Unvermeidbar => URL in Backticks.
