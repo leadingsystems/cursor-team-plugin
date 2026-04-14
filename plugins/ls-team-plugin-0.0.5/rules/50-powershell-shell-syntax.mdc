@@ -1,0 +1,31 @@
+---
+description: Shell-Befehle in Windows-PowerShell-Umgebungen. Keine CMD- oder Unix/Bash-Befehle; vollstaendige Cmdlet-Namen verwenden.
+alwaysApply: true
+---
+
+# Shell-Befehle in Windows-PowerShell-Umgebungen
+
+ctx:Shell = `powershell`
+=> !CMD- oder Unix/Bash-Befehle.
+
+## Regeln
+
+- Dedizierte Tools (Read, Write, StrReplace, Glob, Grep)
+  > Shell-Tool für Dateioperationen.
+- Shell nötig => vollständige PowerShell-Cmdlet-Namen;
+  => !Aliase (`dir`, `ls`, `cat`, `rm`, `cp`, `mv`).
+
+## Nicht-offensichtliche Muster
+
+| Verboten | Stattdessen |
+|----------|-------------|
+| `mkdir -p path` | `New-Item -ItemType Directory -Force -Path "path"` |
+| `find . -name "*.php"` | `Get-ChildItem -Recurse -Filter "*.php"` / Glob |
+| `export VAR=value` | `$env:VAR = "value"` |
+| `echo $VAR` | `$env:VAR` |
+| `head -n 10 file` | `Get-Content "file" -Head 10` |
+| `tail -n 10 file` | `Get-Content "file" -Tail 10` |
+| `cmd1 && cmd2` (PS < 7) | `cmd1; if ($LASTEXITCODE -eq 0) { cmd2 }` |
+| `cmd > /dev/null` | `cmd > $null` |
+| `cmd 2>/dev/null` | `cmd 2>$null` |
+| `touch file` | `New-Item "file" -ItemType File -Force` |

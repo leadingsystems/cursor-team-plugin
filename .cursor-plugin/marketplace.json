@@ -11,6 +11,11 @@
       "name": "ls-team-plugin-0.0.4",
       "source": "./plugins/ls-team-plugin-0.0.4",
       "description": "Agent Rules v0.0.4"
+    },
+    {
+      "name": "ls-team-plugin-0.0.5",
+      "source": "./plugins/ls-team-plugin-0.0.5",
+      "description": "Agent Rules v0.0.5"
     }
   ]
 }
