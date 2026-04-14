@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate version format
         run: |
@@ -36,6 +36,7 @@ jobs:
       - name: Copy source to versioned plugin directory
         run: |
           PLUGIN_DIR="plugins/ls-team-plugin-${{ inputs.version }}"
+          mkdir -p plugins
           cp -r source "$PLUGIN_DIR"
 
       - name: Update version in plugin.json
