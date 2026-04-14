@@ -6,5 +6,21 @@
   "metadata": {
     "description": "Leading Systems Agent Rules and Skills"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "ls-team-plugin-0.0.1",
+      "source": "./plugins/ls-team-plugin-0.0.1",
+      "description": "Agent Rules v0.0.1"
+    },
+    {
+      "name": "ls-team-plugin-0.0.2",
+      "source": "./plugins/ls-team-plugin-0.0.2",
+      "description": "Agent Rules v0.0.2"
+    },
+    {
+      "name": "ls-team-plugin-0.0.3",
+      "source": "./plugins/ls-team-plugin-0.0.3",
+      "description": "Agent Rules v0.0.3"
+    }
+  ]
 }
