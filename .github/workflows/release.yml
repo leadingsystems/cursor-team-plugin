@@ -43,8 +43,9 @@ jobs:
         run: |
           PLUGIN_JSON="plugins/ls-team-plugin-${{ inputs.version }}/.cursor-plugin/plugin.json"
           PLUGIN_NAME="ls-team-plugin-${{ inputs.version }}"
-          jq --arg ver "${{ inputs.version }}" --arg name "$PLUGIN_NAME" \
-            '.version = $ver | .name = $name' \
+          DISPLAY_NAME="LS Team Plugin ${{ inputs.version }}"
+          jq --arg ver "${{ inputs.version }}" --arg name "$PLUGIN_NAME" --arg display "$DISPLAY_NAME" \
+            '.version = $ver | .name = $name | .displayName = $display' \
             "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
 
       - name: Update marketplace.json
