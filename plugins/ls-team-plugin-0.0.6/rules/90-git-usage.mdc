@@ -1,0 +1,29 @@
+---
+description: Git-Nutzung. Lesende Befehle eigenstaendig erlaubt, schreibende Befehle nur durch den Operator.
+alwaysApply: true
+---
+
+# Git-Nutzung
+
+ctx:Git-CLI-Befehle. Lesend: eigenständig erlaubt.
+Schreibend: => !ausführen; nur der Operator.
+
+## Regeln
+
+- default:lokal-zuerst; Remote-lesende Befehle
+  (z. B. `git ls-remote`) nur wenn lokale Daten nicht
+  ausreichen. URL-basiert (`.diff`/`.patch`) nur als
+  Fallback für nicht lokale Repositories.
+- Lesend = verändert weder Repository-Zustand, Worktree,
+  Index, Branches, Tags, Stashes noch Config
+  => eigenständig erlaubt, ohne Nachfrage.
+- Schreibend = verändert eines davon => !ausführen.
+  => !Repositories initialisieren;
+  => !`.git`-Verzeichnisse ändern;
+  => !Git-Config ändern.
+- Schreibende Aktion sinnvoll => Operator vorschlagen
+  (konkreter Befehl + Begründung);
+  => !Workaround suchen, um Vorschlag zu vermeiden.
+- ctx:Vendor-/Assets-Subtrees mit lokalem `.git`:
+  Dateibearbeitung erlaubt; Git-Regeln gelten
+  unverändert (lesend erlaubt, schreibend verboten).

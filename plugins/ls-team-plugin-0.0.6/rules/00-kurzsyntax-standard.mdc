@@ -1,0 +1,88 @@
+---
+description: Definiert die Kurzsyntax-Notation fuer alle nachfolgenden Regeln. Muss vor allen anderen Regeln gelesen und verstanden sein.
+alwaysApply: true
+---
+
+# Kurzsyntax-Standard
+
+Definiert die Kurzsyntax-Notation, die in allen
+nachfolgenden Regeln verwendet werden darf. Jede Form
+ist strikt in ihrer hier definierten Bedeutung zu
+interpretieren.
+
+Diese Regel muss vor allen anderen Regeln gelesen
+und verstanden sein.
+
+## Operatoren
+
+- `A > B` = A hat Vorrang vor B.
+- `A => B` = Wenn A gilt, dann B ausführen.
+- `A ? => STOP` = Der Wahrheitswert von A ist
+  unklar/nicht sicher feststellbar: stoppen und
+  Operator fragen.
+- `A => !B` = Wenn A gilt, B nicht tun.
+- `!A => B` = Wenn A nicht gilt, dann B ausführen.
+- `A & B` = A und B gelten gleichzeitig.
+- `A | B` = Genau eine der Alternativen ist
+  maßgeblich, je nach Fall.
+- `ctx:A` = Regel gilt im Kontext A.
+- `req:A` = A ist erforderliche Voraussetzung.
+- `miss:A => B` = Fehlt A, dann B ausführen.
+  `miss:A => STOP` ist der häufigste Spezialfall
+  (stoppen und anfordern).
+- `default:A` = A gilt nur, wenn keine speziellere
+  Regel greift.
+
+## Kompositionsregel für `?`
+
+`?` prüft, ob der Wahrheitswert von A offen ist.
+A muss daher ein neutraler Sachverhalt sein, kein
+bereits bewerteter Zustand:
+
+- Korrekt: `Regelkonformität ? => STOP` --
+  A = "Regelkonformität", Wahrheitswert offen.
+- Korrekt: `Verfügbarkeit ? => STOP` --
+  A = "Verfügbarkeit", Wahrheitswert offen.
+- Falsch: `Vorprüfung nicht durchführbar ? => STOP`
+  -- A enthält bereits eine Bewertung; `?` fragt
+  nach dem Wahrheitswert eines definitiven Zustands.
+- Richtig stattdessen:
+  `Vorprüfung nicht durchführbar => STOP` --
+  definitiver Zustand, daher `A => B`.
+
+## Trennzeichen
+
+- `;` = Trenner zwischen Ausdrücken in einer Zeile.
+
+## Zusammenspiel `req:` und `miss:`
+
+- `req:A` = deklarativ ("A wird benötigt"), keine
+  implizite Konsequenz.
+- `miss:A => B` = operativ ("Fehlt A, dann B").
+- Kombination: `req:A` + `miss:A => STOP`.
+  Beide dürfen auch einzeln stehen.
+
+## Klammerung
+
+- `()` bei mehrdeutiger Operanden-Zuordnung.
+- Klar: `(!A & B) => C`; `A => (B => C)`.
+- `A => B & C` -- nur bei offensichtlicher
+  Zuordnung ohne Klammern erlaubt.
+- `A => B => C` verboten; auflösen:
+  `A => B; B => C` oder `A => (B => C)`.
+
+## Geltungsbereich von `=> !`
+
+- `=> !` negiert bis `;` oder Zeilenende.
+- `|` nur in positiven Kontexten (`Shell | Read`);
+  in `=> !` verboten; auflösen: `=> !A; => !B`.
+- `&` in `=> !` erlaubt (beides verboten).
+
+## Interpretationsregeln
+
+- Operator-Bedeutungen sind fest; keine freie
+  Umdeutung.
+- Bei Zweifel gilt die ausgeschriebene
+  Standardbedeutung dieser Syntax.
+- Kurzsyntax nur für normative Regeln, nicht für
+  freie Beschreibung oder Begründung.
