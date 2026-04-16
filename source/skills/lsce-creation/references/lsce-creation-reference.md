@@ -8,8 +8,9 @@ einschließlich Screenshot-basierter Generierung.
 
 - req: Skill `lscss-styling` (Variablen, Mixins,
   Content Wrapper, Responsive Design)
-- req: `references/lsce-reference-data.md`
-  (Config-Feldtypen, Template-Ausgabemuster)
+- req: `./lsce-reference-data.md`
+  (relativ zum Verzeichnis dieser Datei;
+  Config-Feldtypen, Template-Ausgabemuster)
 
 ## Regeln
 

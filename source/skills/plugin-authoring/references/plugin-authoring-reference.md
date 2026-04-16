@@ -90,7 +90,8 @@ ctx: Geltungsbereich.
 ## Anweisungen
 
 - ctx:relevante Arbeit => Referenzdaten in
-  `references/...` lesen und befolgen.
+  `./references/...` (relativ zum Verzeichnis
+  dieser `SKILL.md`) lesen und befolgen.
 ```
 
 ## Entscheidung: Rule oder Skill?
@@ -131,3 +132,6 @@ ctx: Geltungsbereich.
 - Markdown-Regeln eingehalten.
 - Beispiele mit korrekten Code-Blöcken und Sprach-Tags.
 - Keine redundanten Vorgaben.
+- Referenz-Pfade in `SKILL.md` explizit als
+  `./references/...` formuliert und mit dem Zusatz
+  "relativ zum Verzeichnis dieser `SKILL.md`" versehen.

@@ -12,7 +12,8 @@ und Skills im `cursor-team-plugin`.
 
 - ctx:Plugin-Arbeit => vor jeder Aktion die
   Referenzdaten in
-  `references/plugin-authoring-reference.md`
-  lesen und befolgen.
+  `./references/plugin-authoring-reference.md`
+  (relativ zum Verzeichnis dieser `SKILL.md`) lesen
+  und befolgen.
 - => !Plugin-Arbeit ohne vorherige Konsultation der
   Referenzdaten.

@@ -13,7 +13,8 @@ README/CHANGELOG).
 
 - ctx:Dokumentübersetzung => vor der Übersetzung die
   Referenzdaten in
-  `references/document-translation-reference.md`
-  lesen und befolgen.
+  `./references/document-translation-reference.md`
+  (relativ zum Verzeichnis dieser `SKILL.md`) lesen
+  und befolgen.
 - => !Dokumentübersetzung ohne vorherige Konsultation
   der Referenzdaten.

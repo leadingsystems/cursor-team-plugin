@@ -10,7 +10,8 @@ ctx: Entwicklung in oder für Contao-Projekte und -Bundles.
 ## Anweisungen
 
 - ctx:Contao-Arbeit => vor jeder Aktion die Referenzdaten
-  in `references/contao-development-reference.md` lesen
+  in `./references/contao-development-reference.md`
+  (relativ zum Verzeichnis dieser `SKILL.md`) lesen
   und befolgen.
 - => !Contao-Arbeit ohne vorherige Konsultation der
   Referenzdaten.

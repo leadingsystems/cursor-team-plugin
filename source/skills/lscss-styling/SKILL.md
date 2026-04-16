@@ -12,7 +12,8 @@ LSCSS-Framework verwenden.
 
 - ctx:SCSS-/LSCSS-Arbeit => vor jeder Aktion die
   Referenzdaten in
-  `references/lscss-styling-reference.md`
-  lesen und befolgen.
+  `./references/lscss-styling-reference.md`
+  (relativ zum Verzeichnis dieser `SKILL.md`) lesen
+  und befolgen.
 - => !SCSS-Arbeit in LSCSS-Projekten ohne vorherige
   Konsultation der Referenzdaten.

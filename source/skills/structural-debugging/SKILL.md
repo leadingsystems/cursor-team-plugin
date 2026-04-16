@@ -15,7 +15,8 @@ steuert dort).
 
 - ctx:Debugging (außerhalb PCF) => vor der Analyse die
   Referenzdaten in
-  `references/structural-debugging-reference.md`
-  lesen und befolgen.
+  `./references/structural-debugging-reference.md`
+  (relativ zum Verzeichnis dieser `SKILL.md`) lesen
+  und befolgen.
 - => !Debugging-Arbeit ohne vorherige Konsultation der
   Referenzdaten.

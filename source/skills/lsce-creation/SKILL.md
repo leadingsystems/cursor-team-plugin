@@ -11,10 +11,11 @@ Custom Elements (LSCEs).
 ## Anweisungen
 
 - ctx:LSCE-Arbeit => vor jeder Aktion die Referenzdaten
-  lesen und befolgen:
-  - `references/lsce-creation-reference.md`
+  lesen und befolgen (Pfade relativ zum Verzeichnis
+  dieser `SKILL.md`):
+  - `./references/lsce-creation-reference.md`
     (Vorgaben und Struktur)
-  - `references/lsce-reference-data.md`
+  - `./references/lsce-reference-data.md`
     (Config-Feldtypen und Template-Ausgabemuster)
 - => !LSCE-Arbeit ohne vorherige Konsultation der
   Referenzdaten.
