@@ -1,5 +1,5 @@
 ---
-description: Shell-Befehle in Windows-PowerShell-Umgebungen. Keine CMD- oder Unix/Bash-Befehle; vollstaendige Cmdlet-Namen verwenden.
+description: Shell-Befehle in Windows-PowerShell-Umgebungen. Keine CMD- oder Unix/Bash-Befehle; vollständige Cmdlet-Namen verwenden.
 alwaysApply: true
 ---
 

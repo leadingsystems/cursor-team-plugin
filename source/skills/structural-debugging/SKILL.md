@@ -1,6 +1,6 @@
 ---
 name: structural-debugging
-description: Strukturelles Debugging. Methodik und Execution Control fuer Fehleranalyse und -behebung in Software-Systemen. Aktivieren bei Debugging-Aufgaben (ausserhalb von PCF-Projekten).
+description: Strukturelles Debugging. Methodik und Execution Control für Fehleranalyse und -behebung in Software-Systemen. Aktivieren bei Debugging-Aufgaben (außerhalb von PCF-Projekten).
 ---
 
 # Strukturelles Debugging

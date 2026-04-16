@@ -1,6 +1,6 @@
 ---
 name: document-translation
-description: Dokumentuebersetzung mit bedeutungserhaltender Umschreibung. Aktivieren beim Uebersetzen oder Umschreiben von Specs, ADRs, Planungsartefakten, Dokumentation, README/CHANGELOG.
+description: Dokumentübersetzung mit bedeutungserhaltender Umschreibung. Aktivieren beim Übersetzen oder Umschreiben von Specs, ADRs, Planungsartefakten, Dokumentation, README/CHANGELOG.
 ---
 
 # Dokumentübersetzung

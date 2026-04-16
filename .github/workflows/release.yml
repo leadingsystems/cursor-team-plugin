@@ -33,6 +33,24 @@ jobs:
             exit 1
           fi
 
+      - name: Validate rule and skill files (no UTF-8 BOM)
+        run: |
+          failed=0
+          while IFS= read -r -d '' f; do
+            bom=$(head -c 3 "$f" | od -An -tx1 | tr -d ' \n')
+            if [ "$bom" = "efbbbf" ]; then
+              echo "Error: UTF-8 BOM detected in $f"
+              echo "  Cursor rule/skill loader fails on files with BOM."
+              echo "  Re-save the file as UTF-8 without BOM."
+              failed=1
+            fi
+          done < <(find source -type f \( -name '*.md' -o -name '*.mdc' \) -print0)
+          if [ "$failed" -ne 0 ]; then
+            echo "BOM validation failed. Aborting release."
+            exit 1
+          fi
+          echo "BOM validation passed."
+
       - name: Copy source to versioned plugin directory
         run: |
           PLUGIN_DIR="plugins/ls-team-plugin-${{ inputs.version }}"

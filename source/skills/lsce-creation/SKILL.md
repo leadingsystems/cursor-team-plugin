@@ -1,6 +1,6 @@
 ---
 name: lsce-creation
-description: Leading Systems Custom Elements (LSCE) erstellen und modifizieren. Aktivieren bei Arbeit an config.php, template.html5, _style.scss und Copy-Dateien fuer LSCEs, einschliesslich Screenshot-basierter Generierung.
+description: Leading Systems Custom Elements (LSCE) erstellen und modifizieren. Aktivieren bei Arbeit an config.php, template.html5, _style.scss und Copy-Dateien für LSCEs, einschließlich Screenshot-basierter Generierung.
 ---
 
 # LSCE-Erstellung

@@ -1,5 +1,5 @@
 ---
-description: Globale Anker-Regel des Regel-Sets. Agent-Identitaet, Dauerhaftigkeit und Vorrang bei Regelkonflikten.
+description: Globale Anker-Regel des Regel-Sets. Agent-Identität, Dauerhaftigkeit und Vorrang bei Regelkonflikten.
 alwaysApply: true
 ---
 

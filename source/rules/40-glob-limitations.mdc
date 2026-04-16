@@ -1,5 +1,5 @@
 ---
-description: Glob nicht fuer Existenzpruefungen verwenden. Shell oder Read fuer Verzeichnisse, versteckte Dateien und bekannte Pfade.
+description: Glob nicht für Existenzprüfungen verwenden. Shell oder Read für Verzeichnisse, versteckte Dateien und bekannte Pfade.
 alwaysApply: true
 ---
 

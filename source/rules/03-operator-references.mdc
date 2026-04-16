@@ -1,5 +1,5 @@
 ---
-description: Aufloesung von @-Referenzen des Operators im Chat-Input. Workspace-Root zuerst, keine Fernsuche.
+description: Auflösung von @-Referenzen des Operators im Chat-Input. Workspace-Root zuerst, keine Fernsuche.
 alwaysApply: true
 ---
 

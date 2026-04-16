@@ -1,22 +1,22 @@
 ---
-description: PCF-Kontexterkennung bei Gespraechsbeginn. Prueft ob ein PCF-Repository im Workspace vorliegt.
+description: PCF-Kontexterkennung bei Gesprächsbeginn. Prüft ob ein PCF-Repository im Workspace vorliegt.
 alwaysApply: true
 ---
 
 # PCF-Kontexterkennung
 
-ctx: Gespraechsbeginn, zusammen mit dem
+ctx: Gesprächsbeginn, zusammen mit dem
 Regel-Bootstrapping. Stellt fest, ob ein
 PCF-Repository (Project Control Framework)
 im Workspace vorliegt.
 
 ## Regeln
 
-- Bei Gespraechsbeginn `.framework-version` suchen:
-  1. Workspace-Root pruefen.
+- Bei Gesprächsbeginn `.framework-version` suchen:
+  1. Workspace-Root prüfen.
   2. Jedes unmittelbare Unterverzeichnis des
-     Workspace-Root pruefen.
-  Beide Schritte ausfuehren; => !nach erstem
+     Workspace-Root prüfen.
+  Beide Schritte ausführen; => !nach erstem
   Treffer abbrechen; => !nach erstem Fehlschlag
   abbrechen.
 - Ergebnis festhalten:
@@ -26,5 +26,5 @@ im Workspace vorliegt.
   - Kein Treffer: kein PCF-Repository erkannt.
 - => !weitere Aktionen aus dieser Regel ableiten;
   => !Skills laden; => !Rollen abfragen.
-  Die Regel stellt ausschliesslich das Ergebnis
-  fuer spaetere Skill-Auswertung bereit.
+  Die Regel stellt ausschließlich das Ergebnis
+  für spätere Skill-Auswertung bereit.

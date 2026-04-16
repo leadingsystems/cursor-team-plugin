@@ -1,5 +1,5 @@
 ---
-description: Definiert die Kurzsyntax-Notation fuer alle nachfolgenden Regeln. Muss vor allen anderen Regeln gelesen und verstanden sein.
+description: Definiert die Kurzsyntax-Notation für alle nachfolgenden Regeln. Muss vor allen anderen Regeln gelesen und verstanden sein.
 alwaysApply: true
 ---
 
