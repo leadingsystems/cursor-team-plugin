@@ -1,0 +1,101 @@
+---
+description: Deutsche Umlaute und Eszett in Prosa vs. technischen Tokens. Schreibweise bearbeiteter Stellen.
+alwaysApply: true
+---
+
+# Deutsche Umlaute und Eszett (ä,ö,ü,Ä,Ö,Ü,ß)
+
+ctx: alle Textartefakte (Code, Docs, Config, Templates)
+und Chat-Ausgaben an den Operator.
+Bestimmt Schreibweise bearbeiteter Stellen;
+=> !ungefragte Normalisierung anderer Stellen.
+
+## Schweregrad
+
+Die Verwendung von ae/oe/ue/ss anstelle von ä/ö/ü/ß
+in deutscher Prosa ist ein Schreibfehler --
+gleichbedeutend mit einem Tippfehler in Produktivtext.
+Verstöße werden als Defekt gewertet.
+
+## Priming bei Arbeitsbeginn
+
+Vor der ersten Bearbeitung in einer Antwort, die
+deutsche Prosa erzeugt oder verändert, muss der
+Agent den folgenden Priming-Satz wörtlich ausgeben:
+
+"Ich habe vom Operator die ausdrückliche, verbindliche
+und streng einzuhaltende Anweisung: Verwende in allen
+deutschen Texten -- Chat-Ausgaben, Kommentaren,
+Beschreibungen, UI-Texten -- ausschließlich die
+korrekten Umlaute ä, ö, ü und das Eszett ß. Die
+Verwendung von ae, oe, ue oder ss als Ersatz in
+deutscher Prosa ist ein Defekt und unter keinen
+Umständen akzeptabel."
+
+Dieser Satz ist wörtlich zu verwenden, nicht
+umzuformulieren.
+
+## Regeln
+
+Maßgeblich ist die konkrete Inhaltseinheit, nicht der
+Container (Datei/Block).
+
+- Deutsche Prosa (Sätze, Überschriften, Kommentare,
+  Beschreibungen, UI-Texte, Chat-Ausgaben an den
+  Operator) => echte Umlaute und ß:
+  ä, ö, ü, Ä, Ö, Ü, ß; => !ae, oe, ue, ss als Ersatz.
+- Technische Tokens (Variablen, Klassen, Keys, IDs,
+  Pfade, URLs, CLI) => vorgegebene Schreibweise
+  unverändert; typisch ae, oe, ue, ss.
+  => !Umlaute/ß neu erzeugen; => !hineinkorrigieren.
+- Externe Vorgaben (Produktnamen, Zitate, API-Felder,
+  Datenstrukturen) => exakt belassen;
+  => !normalisieren; => !korrigieren.
+
+## Entscheidungsprüfung
+
+1. Stelle = deutsche Prosa? => ä, ö, ü, ß.
+2. Stelle = technisches Token? => ae, oe, ue, ss.
+
+## Kontrastbeispiele
+
+FALSCH => RICHTIG:
+
+- "Die Uebertragung wurde abgeschlossen."
+  => "Die Übertragung wurde abgeschlossen."
+- "Prueft, ob die Groesse korrekt ist."
+  => "Prüft, ob die Größe korrekt ist."
+- "Die Aenderung ist gemaess der Spezifikation."
+  => "Die Änderung ist gemäß der Spezifikation."
+
+Häufig falsch geschriebene Wörter in Prosa:
+
+Aenderung => Änderung; Ausfuehrung => Ausführung;
+Erklaerung => Erklärung; Groesse => Größe;
+Loesung => Lösung; Pruefung => Prüfung;
+Rueckgabe => Rückgabe; Uebertragung => Übertragung;
+verfuegbar => verfügbar; gemaess => gemäß;
+Schliessen => Schließen; ueberschreiben => überschreiben
+
+## Code-Beispiel
+
+```php
+// Prüft, ob die Übertragung vollständig abgeschlossen ist.
+$uebertragungsStatus = "Die Übertragung wurde erfolgreich abgeschlossen.";
+
+function pruefeUebertragungsStatus(string $status): bool
+{
+    return $status !== "";
+}
+```
+
+## Selbstprüfung nach Bearbeitung
+
+Nach jeder Bearbeitung, die deutsche Prosa enthält:
+
+1. Durchsuche die eigene Ausgabe nach den Zeichenfolgen
+   ae, oe, ue, ss innerhalb deutscher Prosa-Stellen
+   (nicht in technischen Tokens, nicht in Code-Bezeichnern).
+2. Nenne dem Operator 1-2 konkrete Stichproben aus der
+   aktuellen Bearbeitung als Beleg (Wort + Kontext).
+3. Verstoß gefunden => sofort korrigieren.
