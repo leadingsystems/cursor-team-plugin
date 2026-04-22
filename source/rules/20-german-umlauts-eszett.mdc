@@ -93,9 +93,15 @@ function pruefeUebertragungsStatus(string $status): bool
 
 Nach jeder Bearbeitung, die deutsche Prosa enthält:
 
-1. Durchsuche die eigene Ausgabe nach den Zeichenfolgen
+1. Dateiinhalt prüfen (pro geschriebener Datei):
+   Lies die bearbeitete Stelle per Read-Tool zurück
+   und durchsuche die zurückgelesenen Zeilen nach
    ae, oe, ue, ss innerhalb deutscher Prosa-Stellen
-   (nicht in technischen Tokens, nicht in Code-Bezeichnern).
-2. Nenne dem Operator 1-2 konkrete Stichproben aus der
-   aktuellen Bearbeitung als Beleg (Wort + Kontext).
+   (nicht in technischen Tokens, nicht in
+   Code-Bezeichnern).
+   => !Chat-Ausgabe als Prüfgrundlage verwenden;
+   nur der tatsächliche Dateiinhalt zählt.
+2. Nenne dem Operator 1-2 konkrete Stichproben aus
+   dem zurückgelesenen Dateiinhalt als Beleg
+   (Wort + Kontext + Datei).
 3. Verstoß gefunden => sofort korrigieren.
