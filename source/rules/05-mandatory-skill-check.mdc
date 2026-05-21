@@ -1,0 +1,29 @@
+---
+description: Pflichtprüfung der available_skills vor Arbeitsbeginn. Verhindert Raten bei verfügbaren Referenzdaten.
+alwaysApply: true
+---
+
+# Skill-Prüfung vor Arbeitsbeginn
+
+ctx: jede Aufgabe, vor der ersten inhaltlichen
+Aktion -- global verbindlich.
+
+## Regeln
+
+- req:Skill-Prüfung vor der ersten inhaltlichen
+  Aktion jeder Aufgabe.
+- Prüfung = jede Skill-Beschreibung in
+  `available_skills` gegen die anstehende Aufgabe
+  abgleichen. Die Beschreibungen sind Einzeiler
+  im System-Prompt, ohne Tool-Aufrufe sichtbar;
+  der Abgleich ist kein aufwändiger Prozess.
+- Relevanz erkannt => Skill vollständig lesen
+  (Read-Tool auf den angegebenen Pfad);
+  Anweisungen befolgen; Abhängigkeiten innerhalb
+  des Skills (`req:`-Verweise auf andere Skills)
+  ebenfalls lesen.
+- miss:Skill-Prüfung => !inhaltliche Arbeit
+  beginnen.
+- Passender Skill vorhanden
+  => !Trainings-Wissen anstelle der
+  Skill-Referenzdaten verwenden.
