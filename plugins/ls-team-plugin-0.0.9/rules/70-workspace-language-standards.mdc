@@ -1,0 +1,119 @@
+---
+description: Sprach- und Übersetzungsstandards für Workspace, AI-Chat, Code, Artefakte und UI. Global verbindlich.
+alwaysApply: true
+---
+
+# Sprach- und Übersetzungsstandards für Workspace, AI-Chat, Code, Artefakte und UI
+
+ctx: alle Prompts, Regeln, Code, Artefakte, UI-Strings.
+Global verbindlich
+(siehe Regel `01-agent-identity`).
+
+## Regeln
+
+### Chat-Sprache
+
+- default:Deutsch. Operator steuert die Sprache.
+- => !Sprache wechseln ohne Operator-Anweisung.
+- Technische englische Begriffe unabhängig von
+  Chat-Sprache beibehalten.
+
+### Code-Bezeichner
+
+- Variablen, Methoden, Klassen, Interfaces, Traits,
+  Namespaces, Datei-/Verzeichnisnamen: immer Englisch.
+
+### Code-Kommentare & PHPDoc
+
+- Deutsch; technische Begriffe in Backticks auf Englisch.
+
+### Specs & Planungsartefakte
+
+- Projektspecs, ADRs, Implementierungsentscheidungen:
+  Deutsch.
+
+### README & CHANGELOG
+
+- Intern (deutschsprachiges Team) => Deutsch.
+- Extern (internationale Entwickler) => Englisch.
+- Zielgruppe ? => STOP & Operator fragen.
+
+### Bestehende Dateien
+
+- Sprache bestehender Dateien nicht ändern.
+- Vermutete Abweichung => STOP & Operator klären.
+
+### Umlaute & Eszett
+
+Siehe Regel `20-german-umlauts-eszett`.
+
+### Endnutzer-Ausgabe & Sprachdateien
+
+- Endnutzer-sichtbar (Frontend, Backend-UI, Labels,
+  Meldungen, `tl_*`-DCA-Labels, Templates, UI-Strings):
+  Schlüssel für `en` & `de` bereitstellen.
+- Admin-/CLI-Ausgabe: nur Englisch.
+- Nutzer-sichtbare Strings => !hart codieren;
+  zwingend in Sprachdateien auslagern.
+- Bezeichner immer Englisch (unabhängig von UI-Sprache).
+- => !Inline-Fallbacks (`?? 'text'`);
+  auf Contao-Sprach-Fallback vertrauen.
+  miss:Schlüssel => als Defekt behandeln & anlegen.
+- => !redundantes Escaping von Sprachschlüsseln;
+  auf Template-/Kontextebene vertrauen.
+- => !Existenzprüfungen (`isset`/`??`) für bekannte
+  Schlüssel; direkt referenzieren.
+
+### Niemals übersetzen
+
+Grundprinzip: Framework-/Plattformnamen,
+API-/Config-Bezeichner, etablierte Domain-Begriffe,
+SQL-Keywords, Git-Begriffe und Contao-Spezifika bleiben
+auf Englisch.
+
+Beispiele (nicht vollständig):
+
+- Plattform: PHP, Symfony, Contao, Composer, Git
+- Domain: Service Container, Routing, Bundle, Entity,
+  Repository, Migration, Controller, Template
+- Contao: DCA, InsertTag, Palette, `tl_*`-Tabellen
+- Code: Klassennamen, Namespaces, Config-Keys,
+  CLI-Flags, Datei-/Verzeichnisnamen
+
+### Formatierung technischer Tokens
+
+- Unübersetzte Tokens in Fließtext in Backticks.
+- Bezeichner nicht beugen/deklinieren; unverändert lassen.
+- Bei erster Erwähnung kurze Erläuterung in Klammern.
+- Dokument-Übersetzungen: siehe Skill `document-translation`.
+
+### Code-Beispiel
+
+```php
+/**
+ * Implementiert SPEC-123: Speicherung von Benutzerdaten.
+ *
+ * Die Methode validiert die Eingabedaten gemäß Spec
+ * Abschnitt 4.2.1, erstellt eine neue Entity-Instanz
+ * und speichert sie in der Datenbank.
+ *
+ * @param array<string, mixed> $data Die Benutzerdaten
+ * @return UserEntity Die gespeicherte Entity
+ * @throws \InvalidArgumentException Bei Validierungsfehler
+ */
+public function createUser(array $data): UserEntity
+{
+    // Validierung gemäß SPEC-123, Abschnitt 4.2.1
+    $this->validateUserData($data);
+
+    // Erstelle neue Entity-Instanz
+    $userEntity = new UserEntity();
+
+    // Setze Daten und speichere in der Datenbank
+    $userEntity->setData($data);
+    $this->entityManager->persist($userEntity);
+    $this->entityManager->flush();
+
+    return $userEntity;
+}
+```

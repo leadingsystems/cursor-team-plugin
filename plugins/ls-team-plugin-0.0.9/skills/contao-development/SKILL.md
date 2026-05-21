@@ -1,0 +1,17 @@
+---
+name: contao-development
+description: Contao-Entwicklungsregeln und -Standards. Aktivieren bei Arbeit in oder für Contao-Projekte und -Bundles (Bundle-Skeleton, Services, DCA, composer.json, Sprachschlüssel, Drittanbieter-Widgets).
+---
+
+# Contao-Entwicklung
+
+ctx: Entwicklung in oder für Contao-Projekte und -Bundles.
+
+## Anweisungen
+
+- ctx:Contao-Arbeit => vor jeder Aktion die Referenzdaten
+  in `./references/contao-development-reference.md`
+  (relativ zum Verzeichnis dieser `SKILL.md`) lesen
+  und befolgen.
+- => !Contao-Arbeit ohne vorherige Konsultation der
+  Referenzdaten.
