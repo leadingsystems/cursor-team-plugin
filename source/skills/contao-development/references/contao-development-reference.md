@@ -2,6 +2,102 @@
 
 ctx: Alle Contao-Projekte und -Bundles im Workspace.
 
+## Lokale Contao-Dokumentation
+
+ctx: Ergänzende Kontextstrategie für alle
+Contao-Aufgaben. Ermöglicht gezielten Zugriff
+auf die offizielle Contao-Dokumentation als
+lokalen Klon.
+
+### Pfad und Branch-Zuordnung
+
+- Lokaler Klon: `.agent-docs/contao-docs` relativ
+  zum Workspace-Root.
+- Branch-Zuordnung anhand der im Projekt
+  erkannten Contao-Version:
+  - Contao 5.x => Branch `main`
+  - Contao 4.x => Branch `4.x`
+  - Version unbekannt => Branch `main`
+
+### Kontextstrategie
+
+Bei Contao-Aufgaben diese Reihenfolge einhalten:
+
+1. Projektdateien im Workspace prüfen (bestehender
+   Code, DCA, Services, Templates, Konfiguration).
+2. Contao-Version bestimmen (aus `composer.lock`
+   oder `composer.json`).
+3. Lokale Contao-Dokumentation konsultieren (falls
+   Klon vorhanden; Zuordnung über
+   `contao-doc-map.md` in diesem Verzeichnis).
+4. Bei Widersprüchen zwischen Projektbestand und
+   Dokumentation qualitätsbasiert entscheiden
+   (siehe Abschnitt "Qualitätsbasierte
+   Entscheidung" unten).
+5. Änderung durchführen oder Antwort schreiben.
+6. Wenn bewusst vom Projektmuster abgewichen
+   wurde: kurz in der Ausgabe dokumentieren,
+   welches Muster gewählt wurde und warum.
+
+### Klon-Befehl-Vorlage
+
+Für den Hinweis am Ende der Arbeit, wenn kein
+Klon vorhanden war. `<BRANCH>` durch den
+ermittelten Branch ersetzen (`main` oder `4.x`):
+
+```text
+git clone --depth 1 --recurse-submodules --branch <BRANCH> https://github.com/contao/docs.git .agent-docs/contao-docs
+```
+
+### Qualitätsbasierte Entscheidung
+
+ctx: Widerspruch zwischen bestehendem Projektcode
+und Contao-Dokumentation. Der Agent entscheidet
+eigenständig anhand der folgenden Kriterien.
+
+Leitprinzip: Wähle den Ansatz, der die
+bestmögliche Qualität bietet. Berücksichtige
+dabei sowohl die technische Qualität als auch
+die langfristige Wartbarkeit.
+
+Entscheidungskriterien:
+
+- Zeigt die Dokumentation einen nativen
+  Contao-Mechanismus, den der Projektcode durch
+  eine eigene Lösung ersetzt (z. B. eigene
+  Sichtbarkeitssteuerung statt `subpalettes`,
+  eigener Validator statt `eval.rgxp`, eigener
+  Endpunkt statt DCA-Callback)?
+  => Nativen Mechanismus bevorzugen. Der
+  Projektcode ist hier wahrscheinlich Ergebnis
+  einer Wissenslücke, nicht eine bewusste
+  Designentscheidung.
+- Sind beide Ansätze valide Contao-Muster, aber
+  die Dokumentation empfiehlt einen davon?
+  => Qualitätsgewinn gegen Konsistenz im Projekt
+  abwägen. Bei deutlichem Qualitätsunterschied
+  den besseren Weg wählen. Bei geringem
+  Qualitätsunterschied kann Projektkonsistenz
+  sinnvoller sein, wenn sie langfristig die
+  Wartbarkeit stützt.
+- Betrifft der Widerspruch die Projektstruktur
+  (Verzeichnisaufbau, Service-Organisation,
+  Namensgebung) und die Dokumentation zeigt
+  einen klar besseren Aufbau?
+  => Den dokumentierten Aufbau bevorzugen.
+  Strukturelle Mängel im Projekt sind häufig
+  historisch gewachsen und kein bewusster
+  Standard.
+
+Transparenzpflicht: Wenn bewusst vom
+Projektmuster abgewichen wird, kurz in der
+Ausgabe dokumentieren:
+
+- Welches Projektmuster vorgefunden wurde.
+- Welches Muster stattdessen gewählt wurde.
+- Warum (nativer Mechanismus, Doku-Empfehlung,
+  Qualitätsgewinn).
+
 ## Versions-Support
 
 - default:Contao 5.3; => !4.13-Support ohne explizite
