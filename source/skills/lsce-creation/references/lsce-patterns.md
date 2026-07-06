@@ -177,24 +177,69 @@ Mehrere Bilder aus einem `fileTree` mit
 
 ### Properties des Image-Objekts
 
+`getImageObject` gibt ein Objekt mit allen
+Properties aus Contao's `Figure::getLegacyTemplateData()`
+zurück, plus das `Figure`-Objekt selbst.
+
+LSCE-relevante Properties:
+
 | Property | Inhalt |
 |----------|--------|
 | `$image->picture` | Bilddaten für `picture_default` |
 | `$image->imageUrl` | Optionaler Link (Backend-Bildoption) |
 | `$image->imageTitle` | Titel-Attribut |
 | `$image->caption` | Bildunterschrift |
+| `$image->alt` | Alt-Text (auch in `picture` enthalten) |
+| `$image->src` | Direkte Bild-URL (z.B. für CSS-Hintergrund) |
+| `$image->figure` | Contao-5-`Figure`-Objekt (moderne API) |
 
-### `standardField` image als bevorzugte Alternative
+### Bild-Einbindung: Mechanismus-Wahl
 
-Wenn Contaos vollständiges Bild-Handling benötigt
-wird (addImage-Checkbox, Bildgrößen-Konfiguration,
-Viewport-Optimierung, responsive Images), ist
-`'image'` als `standardField` die bevorzugte Wahl.
+Drei Wege, ein Bild ins LSCE einzubinden:
 
-Ein manuelles `fileTree` + `imageSize` ohne diese
-Pipeline sollte begründet sein (z.B. mehrere
-unabhängige Bilder im selben Element, Bild
-innerhalb einer `list`).
+**1. Root-`standardFields` (feste Position):**
+
+```php
+'standardFields' => ['cssID', 'image'],
+```
+
+Bindet Contaos vollständige Bild-Pipeline ein
+(addImage-Checkbox, Bildgrößen-Konfiguration,
+Viewport-Optimierung, responsive Images). Das
+Bild erscheint an Contaos Standardposition
+(unterhalb der eigenen Felder).
+
+**2. Positioniertes `standardField` (frei platziert):**
+
+```php
+'singleSRC' => [
+    'inputType' => 'standardField',
+],
+'size' => [
+    'inputType' => 'standardField',
+],
+```
+
+Bindet die Contao-DCA-Felder `singleSRC` und
+`size` an einer frei wählbaren Position ein.
+Beide Felder müssen explizit definiert werden.
+Kein `addImage`-Checkbox -- das Bild ist immer
+aktiv. Feldname ist der DCA-Name (`singleSRC`),
+nicht `image`.
+
+**3. Manuelles `fileTree` + `imageSize`:**
+
+Eigene Felder mit voller Kontrolle (siehe
+Varianten 1-4 oben). Nötig wenn:
+- Mehrere unabhängige Bilder im Element.
+- Bild innerhalb einer `list`.
+- `addImage`-Checkbox unerwünscht ist.
+
+**Entscheidung:** Mechanismus 1 bevorzugen,
+wenn ein einzelnes Bild an Standardposition
+ausreicht. Mechanismus 2, wenn das Bild
+zwischen eigenen Feldern positioniert sein muss.
+Mechanismus 3 nur bei den genannten Sonderfällen.
 
 ---
 
