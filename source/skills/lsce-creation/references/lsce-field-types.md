@@ -8,29 +8,157 @@ geladen -- nicht pauschal vorab.
 
 ## Feldstruktur
 
-Jedes Feld im `fields`-Array folgt diesem Aufbau:
+Felder im `fields`-Array verwenden Schlüssel aus
+zwei Quellen: Rocksolid-eigene und Contao-native
+(von Rocksolid durchgereicht). Nicht jedes Feld
+braucht alle Schlüssel -- `group` und
+`standardField` haben z.B. weder `label` noch
+`eval`.
+
+### Grundstruktur
 
 ```php
 'feldName' => [
-    'label' => ['Backend-Bezeichnung'],
+    'label' => ['Bezeichnung', 'Beschreibungstext'],
     'inputType' => '<typ>',
     'eval' => [
         'tl_class' => '<layout-klasse>',
-        // weitere eval-Optionen
     ],
 ]
 ```
 
-Optionale Schlüssel je nach `inputType`:
+- `inputType` ist der einzige Pflichtschlüssel.
+- `label` und `eval` sind optional -- abhängig
+  vom `inputType` (siehe inputType-Katalog).
 
-| Schlüssel | Verwendung |
-|-----------|-----------|
-| `options` | Feste Auswahlliste (`select`, `radio`, `inputUnit`) |
-| `options_callback` | Dynamische Optionen (z.B. Bildgrößen) |
-| `reference` | Sprachreferenz für Optionen |
+### `label`-Format
+
+Drei Varianten:
+
+- **Einelementiges Array:** `['Bezeichnung']` --
+  wenn das Label für sich spricht.
+- **Zweielementiges Array:**
+  `['Bezeichnung', 'Hilfetext']` -- zweites
+  Element ist der Beschreibungstext, der im
+  Backend unter dem Feld erscheint. Kann leer
+  sein (`''`), wenn kein Hilfetext nötig ist.
+- **`$GLOBALS`-Referenz:** Bei Verwendung von
+  Contao-Core-Funktionalität aktiv prüfen, ob
+  passende Core-Sprachschlüssel existieren.
+  Einheitliche Labels verbessern die
+  Backend-Konsistenz für Redakteure.
+- **Mehrsprachig:** Array mit Sprachschlüsseln.
+  Rocksolid wählt automatisch die passende
+  Sprache anhand der Backend-Sprache.
+
+Beispiele:
+
+```php
+// Mehrsprachiges Label
+'label' => [
+    'de' => ['Überschrift', 'Hauptüberschrift'],
+    'en' => ['Headline', 'Main headline'],
+],
+```
+
+```php
+// Label aus dem Core wiederverwenden
+'label' => $GLOBALS['TL_LANG']['MSC']['target'],
+
+// Sprachreferenz für Optionslisten
+'reference' => &$GLOBALS['TL_LANG']['MSC'],
+```
+
+### Feld-Level-Keys
+
+Rocksolid speichert LSCE-Daten als serialisiertes
+Array in einem einzigen Datenbankfeld. Nicht alle
+Keys der Contao-DCA-Referenz sind deshalb im
+LSCE-Kontext wirksam.
+
+**Rocksolid-eigene Keys** (nicht in der
+Contao-DCA-Doku dokumentiert):
+
+| Key | Verwendung |
+|-----|-----------|
 | `fields` | Unterfelder bei `list` |
 | `elementLabel` | Label-Template bei `list` (`'%s. Element'`) |
 | `minItems` | Minimale Elementanzahl bei `list` |
+| `maxItems` | Maximale Elementanzahl bei `list` |
+| `dependsOn` | Bedingte Feldanzeige (siehe unten) |
+
+**Contao-native Keys** (von Rocksolid
+durchgereicht):
+
+| Key | Verwendung |
+|-----|-----------|
+| `label` | Feldbezeichnung im Backend |
+| `inputType` | Feldtyp (Pflicht) |
+| `default` | Standardwert bei neuem Element |
+| `options` | Feste Auswahlliste (`select`, `radio`, `inputUnit`) |
+| `options_callback` | Dynamische Optionen (z.B. Bildgrößen) |
+| `reference` | Sprachreferenz für Optionen |
+| `eval` | Feldkonfiguration (siehe eval-Optionen) |
+| `load_callback` | Callback beim Laden des Feldwerts |
+| `save_callback` | Callback beim Speichern des Feldwerts |
+
+Vollständige Referenzen:
+
+- Contao-DCA:
+  [DCA Fields](https://docs.contao.org/5.x/dev/reference/dca/fields/)
+- Rocksolid Custom Elements:
+  [RSCE-Doku](https://rocksolidthemes.com/de/contao/plugins/custom-content-elements/dokumentation)
+
+**Nicht wirksam im LSCE-Kontext** (betreffen
+Datenbank-Spalten oder Listenansichten, die
+Rocksolid abstrahiert):
+`sql`, `relation`, `search`, `sorting`, `filter`,
+`flag`, `exclude`, `toggle`.
+
+**Nicht unterstützte `inputType`s:**
+`password`, `moduleWizard`.
+
+### `dependsOn` (bedingte Feldanzeige)
+
+Rocksolid-eigener Key. Blendet ein Feld nur
+ein, wenn ein anderes Feld einen bestimmten
+Wert hat. Ersetzt Contao-`subpalettes` im
+LSCE-Kontext.
+
+**Einfach (Checkbox):**
+
+```php
+'details' => [
+    'label' => ['Details'],
+    'inputType' => 'textarea',
+    'dependsOn' => 'showDetails',
+]
+```
+
+Feld erscheint, wenn die Checkbox `showDetails`
+aktiviert ist.
+
+**Mit Wertprüfung (Select/Radio):**
+
+```php
+'details' => [
+    'label' => ['Details'],
+    'inputType' => 'textarea',
+    'dependsOn' => [
+        'field' => 'mode',
+        'value' => 'extended',
+    ],
+]
+```
+
+Mehrere Werte: `'value' => ['a', 'b']` --
+Feld erscheint, wenn einer der Werte
+übereinstimmt.
+
+**Ebenenreferenz in `list`-Unterfeldern:**
+
+`'field' => '../feldName'` greift auf Felder
+eine Ebene höher zu (außerhalb der `list`).
 
 ---
 
@@ -133,28 +261,99 @@ Template-Zugriff: String (URL).
 
 #### `standardField`
 
-Bindet ein Contao-Standardfeld an einer
-bestimmten Position im Formular ein.
+Bindet ein beliebiges Feld aus `tl_content`
+oder `tl_module` an einer bestimmten Position
+im Formular ein.
 
-Wann wählen: Wenn ein Standardfeld
-(`headline`, `image`, `text`) nicht am
-Standard-Platz erscheinen soll, sondern
-zwischen anderen Feldern.
+Wann wählen: Wenn ein Contao-Standardfeld
+nicht am Standard-Platz erscheinen soll,
+sondern zwischen eigenen Feldern.
+
+Der Feldname muss dem tatsächlichen
+DCA-Feldnamen in `tl_content`/`tl_module`
+entsprechen -- nicht den Bezeichnungen aus dem
+Root-`standardFields`-Array. Beispiel: Das
+Bild-Dateifeld heißt im DCA `singleSRC`,
+nicht `image`.
+
+**Abgrenzung zum Root-`standardFields`-Array:**
+
+Das Root-Array `standardFields` im Config-Root
+bindet vordefinierte Feld-Gruppen an festen
+Positionen ein. Verfügbare Werte
+([RSCE-Doku](https://rocksolidthemes.com/de/contao/plugins/custom-content-elements/dokumentation)):
+
+| Wert | Verfügbar für | Wirkung |
+|------|--------------|---------|
+| `headline` | Content + Module | Überschrift + H-Tag |
+| `cssID` | Content + Module | CSS-ID + CSS-Klasse |
+| `space` | Content + Module | Abstand oben/unten |
+| `text` | Nur Content | Contao-Texteditor |
+| `image` | Nur Content | `addImage` + Bild-Pipeline (inkl. `size`) |
+
+`inputType => 'standardField'` im
+`fields`-Array ist ein anderer Mechanismus:
+Er bindet ein **einzelnes** DCA-Feld an einer
+frei wählbaren Position ein. Zusammengehörige
+Felder (z.B. `singleSRC` + `size`) müssen
+einzeln definiert werden.
+
+Wann welchen Mechanismus wählen: siehe
+`lsce-patterns.md`, Abschnitt
+"`standardFields`-Tabelle".
 
 ```php
 'headline' => [
     'inputType' => 'standardField',
-]
+],
+'singleSRC' => [
+    'inputType' => 'standardField',
+],
+'size' => [
+    'inputType' => 'standardField',
+],
 ```
 
 Kein `label`, kein `eval` -- wird vom
 Standardfeld selbst definiert.
 
+**Anpassbar:** `label`, `options` und `eval`
+können überschrieben werden, um das
+Standardfeld zu verändern:
+
+```php
+'headline' => [
+    'inputType' => 'standardField',
+    'options' => ['h2', 'h3'],
+],
+'text' => [
+    'label' => ['Inhalt', 'Freitext-Bereich'],
+    'inputType' => 'standardField',
+    'eval' => ['mandatory' => false],
+]
+```
+
+**Einschränkungen:**
+
+- Nur auf der obersten Ebene -- nicht innerhalb
+  von `list`-Unterfeldern.
+- Pro Contao-Feldname nur einmal möglich
+  (`'headline'` kann als PHP-Array-Key nur
+  einmal existieren). Für zusätzliche Felder
+  gleichen Typs eigene Felder definieren
+  (z.B. `inputUnit` mit H-Tag-Optionen für
+  eine zweite Überschrift).
+- Jedes Feld wird einzeln eingebunden --
+  zusammengehörige Felder wie `singleSRC`
+  und `size` müssen beide explizit definiert
+  werden.
+
 Template-Zugriff bei `headline`:
 
 ```php
-<?php echo $this->headline; ?>  // Text
-<?php echo $this->hl; ?>        // Tag (h1-h6)
+<<?php echo $this->hl; ?>>
+    <?php echo $this->headline; ?>
+</<?php echo $this->hl; ?>>
 ```
 
 ---
@@ -217,9 +416,12 @@ Template-Zugriff: String (bei RTE = HTML).
 <?php echo $this->text; ?>
 ```
 
-RTE-Ausgabe direkt ausgeben -- kein `<p>`-Wrapper
-drum herum, da TinyMCE bereits Block-Elemente
-erzeugt.
+RTE-Ausgabe direkt ausgeben -- kein zusätzliches
+`<p>` drum herum, da TinyMCE in der
+Standardkonfiguration bereits Block-Elemente
+erzeugt. Ob `<p>` im Ausgabe-Kontext valide ist,
+wird bei der Template-Erstellung geprüft
+(siehe `rte`-Abschnitt unter eval-Optionen).
 
 #### `select`
 
@@ -298,13 +500,15 @@ Template-Zugriff: Boolean.
 #### `fileTree`
 
 Datei-/Bildauswahl aus der Contao-Dateiverwaltung.
-
-Wann wählen: Einzelbild oder Datei-Upload.
 Für vollständiges Bild-Handling mit
 Größenoptimierung `standardField` image
 bevorzugen (siehe `lsce-patterns.md`).
 
-Pflicht-`eval` bei Bildern:
+**Einzelbild:**
+
+Wann wählen: Ein Bild oder eine Datei pro Feld.
+
+Pflicht-`eval`:
 - `'fieldType' => 'radio'` (Einzelauswahl)
 - `'filesOnly' => true`
 - `extensions`: Aus dem Projekt ableiten
@@ -339,10 +543,60 @@ in ein Bild-Objekt wandeln).
 <?php endif; ?>
 ```
 
-**Mehrfachauswahl (Galerie):**
-`'fieldType' => 'checkbox'` +
-`'multiple' => true` +
-`'orderField' => '<feldName>Order'`.
+**Galerie (Mehrfachauswahl):**
+
+Wann wählen: Mehrere Bilder, deren Auswahl
+und Reihenfolge der Redakteur bestimmt.
+
+Pflicht-`eval`:
+- `'fieldType' => 'checkbox'` (Mehrfachauswahl)
+- `'multiple' => true`
+- `'filesOnly' => true`
+- `extensions`: Wie bei Einzelbild.
+
+Optionale `eval`-Ergänzungen:
+- `'isGallery' => true` -- zeigt die
+  ausgewählten Dateien als Bildvorschau im
+  Backend (reine Darstellungsoption, definiert
+  nicht die Galerie selbst).
+- `'isSortable' => true` -- erlaubt dem
+  Redakteur die Reihenfolge per Drag & Drop
+  zu ändern.
+
+```php
+'images' => [
+    'label' => ['Bilddatei(en)', ''],
+    'inputType' => 'fileTree',
+    'eval' => [
+        'fieldType' => 'checkbox',
+        'multiple' => true,
+        'filesOnly' => true,
+        'extensions' => '...',
+        'isGallery' => true,
+        'isSortable' => true,
+        'tl_class' => 'clr',
+    ],
+]
+```
+
+Template-Zugriff: Array von UUIDs. Jede UUID
+muss einzeln über `getImageObject` aufgelöst
+werden.
+
+```php
+<?php if ($this->images): ?>
+    <?php foreach ($this->images as $uuid): ?>
+        <?php if ($image = $this->getImageObject(
+            $uuid, $this->size)
+        ): ?>
+            <?php $this->insert(
+                'picture_default',
+                $image->picture
+            ); ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php endif; ?>
+```
 
 #### `imageSize`
 
@@ -501,6 +755,7 @@ Template-Zugriff: Array der ausgewählten Keys.
 | `picker` | Allgemeiner Record-Picker | Für spezielle Auswahl |
 | `tableWizard` | Redakteur-editierbare Tabelle | Komplex, selten |
 | `radioTable` | Radio mit visueller Vorschau | Visuelle Optionen |
+| `rocksolid_icon_picker` | Icon aus Icon-Font wählen | Nicht verwenden -- erfordert Icon-Font-Setup und wird in unseren Projekten nicht eingesetzt |
 
 ---
 
@@ -579,7 +834,25 @@ Sparsam einsetzen -- nur bei Feldern, ohne die
 das Element nicht funktioniert (z.B. Bild bei
 einem reinen Bildelement).
 
-### Weitere relevante eval-Optionen
+### `style` (direkte CSS-Attribute)
+
+`style` ist ein dokumentierter eval-Key, sollte
+aber die absolute Ausnahme bleiben. Contao bietet
+mit `tl_class` umfangreiche Layout-Klassen
+(siehe [Arranging Fields](https://docs.contao.org/5.x/dev/reference/dca/palettes/#arranging-fields)).
+Direkte `style`-Angaben führen zu inkonsistentem
+Backend-Verhalten. Nur einsetzen, wenn keine
+`tl_class`-Kombination die gewünschte Wirkung
+erzielt.
+
+### Weitere eval-Optionen
+
+eval-Optionen konfigurieren das Widget-Verhalten
+und werden von Rocksolid an Contao durchgereicht.
+Die meisten Contao-eval-Optionen funktionieren
+im LSCE-Kontext.
+
+Häufig in LSCEs verwendet:
 
 | Option | Wirkung | Typischer Einsatz |
 |--------|---------|-------------------|
@@ -588,8 +861,14 @@ einem reinen Bildelement).
 | `filesOnly` | Nur Dateien, keine Ordner | Immer bei `fileTree` |
 | `extensions` | Erlaubte Dateiendungen | Bei `fileTree` für Bilder |
 | `multiple` | Mehrfachauswahl | `checkboxWizard`, `fileTree` |
-| `includeBlankOption` | Leere Option in Select | `imageSize` |
+| `includeBlankOption` | Leere Option in Dropdown | `imageSize`, `select` |
 | `rgxp` | Validierungsregel | `'digit'` bei `imageSize` |
+| `isGallery` | Bildvorschau im Backend | `fileTree` mit Mehrfachauswahl (reine Darstellung) |
+| `isSortable` | Sortierung der Auswahl | `fileTree`, `picker` |
+| `orderField` | Spalte für Sortierreihenfolge | `fileTree` mit `isGallery` |
+
+Vollständige eval-Referenz:
+[DCA Evaluation](https://docs.contao.org/5.x/dev/reference/dca/fields/#evaluation)
 
 ---
 
@@ -603,7 +882,8 @@ einem reinen Bildelement).
 | `radio` | String (Key) | `$this->feldName` |
 | `checkbox` | Boolean | `$this->feldName` |
 | `url` | String (URL) | `$this->feldName` |
-| `fileTree` | UUID | `$this->getImageObject(...)` |
+| `fileTree` (Einzel) | UUID | `$this->getImageObject(...)` |
+| `fileTree` (Galerie) | Array\<UUID\> | `foreach` + `getImageObject` pro UUID |
 | `imageSize` | Array | Zweiter Parameter bei `getImageObject` |
 | `inputUnit` | Array | `$this->feldName['value']`, `$this->feldName['unit']` |
 | `pageTree` | Integer (ID) | `$this->feldName` |
@@ -626,7 +906,8 @@ wird. Kein toter HTML-Code, keine leeren Container.
 | `text`, `textarea`, `url` | `$this->feldName` (leerer String = falsy) |
 | `select`, `radio` | `$this->feldName` (leerer Key = falsy) |
 | `checkbox` | `$this->feldName` (Boolean) |
-| `fileTree` (Bild) | `$this->feldName && ($image = $this->getImageObject(...))` |
+| `fileTree` (Einzelbild) | `$this->feldName && ($image = $this->getImageObject(...))` |
+| `fileTree` (Galerie) | `$this->feldName` (leeres Array = falsy) |
 | `inputUnit` | `$this->feldName['value']` |
 | `list` (Rocksolid) | `$this->feldName` (leeres Array = falsy) |
 | `listWizard` | `$this->feldName` (leeres Array = falsy) |
