@@ -65,16 +65,18 @@ des gewünschten Elements.
 Aufgaben:
 
 1. Sichtbare Elemente identifizieren und
-   kategorisieren (Headline, Subheadline,
+   kategorisieren (z.B. Headline, Subheadline,
    Fließtext, Bild, Button, Icon, Liste).
 2. Wiederholende Strukturen erkennen
-   (=> `list`-Feld + `foreach`).
+   (gleichartige Elemente, die sich wiederholen).
 3. Statische vs. editierbare Elemente
    unterscheiden (z.B. Deko-Icon per CSS vs.
    editierbares Icon-Feld).
-4. Responsive-Annahmen formulieren
-   (Best-Practice-basiert, kein Mobile-Design
-   erforderlich).
+4. Responsive-Verhalten bewerten: Liegen
+   Informationen zum mobilen Layout vor? Falls
+   ja, berücksichtigen. Falls nein,
+   Best-Practice-basierte Annahmen formulieren
+   und dem Operator im Checkpoint vorlegen.
 
 Ausgabe für den Checkpoint:
 
@@ -84,7 +86,9 @@ Ausgabe für den Checkpoint:
 - Offene Scope-Fragen an den Operator
   (z.B. "Soll das Icon editierbar sein oder
   reicht eine feste CSS-Klasse?").
-- Responsive-Annahmen.
+- Responsive-Verhalten: Zusammenfassung
+  vorliegender Vorgaben oder eigene Annahmen
+  (als solche gekennzeichnet).
 
 ### Phase-1-Checkpoint (Pflicht)
 
@@ -187,31 +191,52 @@ siehe `lsce-field-types.md`.
 Keine hardcodierten Pfade. Einstiegspunkt +
 Konstantensuche im konkreten Projekt.
 
+### Einstiegspunkt bestimmen
+
+| Contao | Einstiegspunkt |
+|--------|----------------|
+| 5+ | Root der Theme-Erweiterung |
+| 4 | Projekt-Root |
+
+Contao 5+: Die Theme-Erweiterung lokalisieren
+unter `vendor/leadingsystems/merconis-theme-*/`.
+Genau ein Treffer => als Einstiegspunkt
+verwenden. Mehrere | kein Treffer => Operator
+fragen.
+
+=> !Workspace-weite Suche nach Konstanten
+(Symlinks erzeugen Duplikate).
+
+Contao 4 nur bei expliziter Operator-Angabe.
+
 ### LSCE-Erstellungspfad (`lsce_local`)
 
 | Contao | Einstiegspunkt | Konstante |
 |--------|----------------|-----------|
-| 5+ | `src/` | `lsce_local` |
+| 5+ | Theme-Root | `lsce_local` |
 | 4 | `files/` | `lsce_local` |
 
-1. Contao-Version aus Projekt ableiten oder
-   Operator fragen.
-2. Unter Einstiegspunkt nach `lsce_local` suchen.
-3. Gefunden => verwenden.
-4. miss:`lsce_local` => Operator fragen.
+1. Unter dem Einstiegspunkt nach `lsce_local`
+   suchen.
+2. Gefunden => verwenden.
+3. miss:`lsce_local` => Operator fragen.
 
 ### Templates-Pfad (Proxy-Dateien)
 
 | Contao | Einstiegspunkt | Konstante |
 |--------|----------------|-----------|
-| 5+ | `src/` | `theme/templates` |
+| 5+ | Theme-Root | `theme/templates` |
 | 4 | Projekt-Root | `templates` |
+
+Contao 5+: `theme/templates` als Konstante
+verwenden, nicht bloß `templates` (Kollision
+mit `contao/templates` möglich).
 
 ### LSCSS-Pfad (Styling-Registrierung)
 
 | Contao | Einstiegspunkt | Konstante |
 |--------|----------------|-----------|
-| 5+ | `src/` | `lscss/lsce` |
+| 5+ | Theme-Root | `lscss/lsce` |
 | 4 | `files/` | `lscss/lsce` |
 
 Registrierung: `@import`-Zeile in `_lsce.scss`
@@ -230,10 +255,12 @@ miss:`_lsce.scss` => Operator fragen.
 - => !Inline-Styles im Template.
 - Äußerster Wrapper nutzt `$this->class`
   (enthält automatisch `ce_rsce_<name>` +
-  Redakteur-Klassen). => !manuelle Klassen
-  auf diesem Element.
-- Eigene CSS-Klassen nur auf innere
-  Strukturelemente.
+  Redakteur-Klassen). Eigene CSS-Klassen
+  primär auf innere Strukturelemente.
+  Dynamische Steuerungsklassen auf dem
+  äußeren Wrapper sind erlaubt, wenn sie
+  von Backend-Eingaben abhängen (z.B.
+  Positionierung, Layout-Varianten).
 
 ## Normative Regeln
 
@@ -275,20 +302,31 @@ wird. Kein toter HTML-Code, keine leeren
 Container.
 
 Entscheidungslogik pro Feldtyp:
-siehe `lsce-patterns.md`.
+siehe `lsce-field-types.md`.
 
-### TinyMCE-Preset für einzeilige Felder
+### TinyMCE und HTML-Kontextprüfung
 
-Bei einzeiligen RTE-Feldern (Headlines,
-Eyebrows) eigenes TinyMCE-Preset mit
-`forced_root_block: false` verwenden.
+TinyMCE erzeugt standardmäßig `<p>`-Wrapper
+um Inhalte. Vor dem Einsatz eines RTE-Feldes
+prüfen: Ist der Ausgabe-Kontext im Template
+mit Block-Elementen wie `<p>` kompatibel?
 
-- Preset-Datei nach
-  `src/Resources/contao/templates/`
-  (nicht in `lsce_local/` -- kein registrierter
-  Template-Pfad).
+- Ausgabe in `<div>`, `<section>`, `<li>`:
+  `<p>` ist valide -- Standard-TinyMCE passt.
+- Ausgabe in `<h1>`-`<h6>`, `<span>`,
+  `<button>`, `<a>`: `<p>` erzeugt ungültiges
+  HTML -- eigenes Preset mit
+  `forced_root_block: false` verwenden.
+
+Preset-Datei nach
+`src/Resources/contao/templates/` ablegen
+(nicht in `lsce_local/` -- kein registrierter
+Template-Pfad).
+
 - => !Regex-Workarounds zum Entfernen von
-  `<p>`-Wrappern im Template.
+  `<p>`-Wrappern im Template. Das Problem
+  an der Quelle (Preset) lösen, nicht im
+  Output.
 
 ### Minimalistisches Prinzip
 
