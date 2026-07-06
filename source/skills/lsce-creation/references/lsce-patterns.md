@@ -159,9 +159,7 @@ Mehrere Bilder aus einem `fileTree` mit
 ```php
 <?php if ($this->images): ?>
     <div class="gallery-container">
-        <?php foreach (
-            deserialize($this->images) as $uuid
-        ): ?>
+        <?php foreach ($this->images as $uuid): ?>
             <?php if ($image = $this->getImageObject(
                 $uuid, $this->gallerySize)
             ): ?>

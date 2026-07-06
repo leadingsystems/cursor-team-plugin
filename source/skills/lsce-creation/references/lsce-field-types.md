@@ -33,7 +33,7 @@ braucht alle Schlüssel -- `group` und
 
 ### `label`-Format
 
-Drei Varianten:
+Vier Varianten:
 
 - **Einelementiges Array:** `['Bezeichnung']` --
   wenn das Label für sich spricht.
@@ -117,6 +117,27 @@ Rocksolid abstrahiert):
 
 **Nicht unterstützte `inputType`s:**
 `password`, `moduleWizard`.
+
+### Datenfluss: JSON-Speicherung und automatische Deserialisierung
+
+Rocksolid speichert alle LSCE-Felddaten als JSON
+in einer einzigen Spalte (`rsce_data`). Beim
+Rendern wird dieser JSON-String dekodiert und
+anschließend `deserializeDataRecursive` auf alle
+Werte angewendet -- d.h. verschachtelte
+serialisierte Strings werden automatisch in
+Arrays/Objekte aufgelöst.
+
+**Konsequenz für Templates:** Alle Feldwerte
+sind bereits deserialisiert, wenn sie das
+Template erreichen. `deserialize()` oder
+`StringUtil::deserialize()` im Template ist
+nie nötig und immer redundant.
+
+Dies unterscheidet LSCEs fundamental von
+Standard-Contao-DCA-Feldern, wo serialisierte
+Arrays in eigenen DB-Spalten liegen und im
+Template manuell deserialisiert werden müssen.
 
 ### `dependsOn` (bedingte Feldanzeige)
 
@@ -443,6 +464,12 @@ gleichzeitig sichtbar sein müssen.
 ]
 ```
 
+Ohne `includeBlankOption` ist immer eine Option
+selektiert (erste = Standard) -- keine
+`if`-Prüfung nötig. Mit `includeBlankOption`
+kann der Redakteur bewusst "keine Auswahl"
+treffen -- dann `if`-Prüfung erforderlich.
+
 Template-Zugriff: String (Option-Key).
 
 ```php
@@ -643,10 +670,7 @@ Wert + Einheit als Kombination.
     'label' => ['Überschrift'],
     'inputType' => 'inputUnit',
     'options' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-    'eval' => [
-        'tl_class' => 'w50',
-        'basicEntities' => true,
-    ],
+    'eval' => ['tl_class' => 'w50'],
 ]
 ```
 
@@ -734,13 +758,12 @@ Kanäle, Kategorien).
 ]
 ```
 
-Template-Zugriff: Array der ausgewählten Keys.
+Template-Zugriff: Array der ausgewählten Keys
+(Rocksolid deserialisiert automatisch).
 
 ```php
 <?php if ($this->features): ?>
-    <?php foreach (
-        deserialize($this->features) as $feature
-    ): ?>
+    <?php foreach ($this->features as $feature): ?>
         <?php echo $feature; ?>
     <?php endforeach; ?>
 <?php endif; ?>
@@ -864,8 +887,7 @@ Häufig in LSCEs verwendet:
 | `includeBlankOption` | Leere Option in Dropdown | `imageSize`, `select` |
 | `rgxp` | Validierungsregel | `'digit'` bei `imageSize` |
 | `isGallery` | Bildvorschau im Backend | `fileTree` mit Mehrfachauswahl (reine Darstellung) |
-| `isSortable` | Sortierung der Auswahl | `fileTree`, `picker` |
-| `orderField` | Spalte für Sortierreihenfolge | `fileTree` mit `isGallery` |
+| `isSortable` | Sortierung per Drag & Drop | `fileTree` (Reihenfolge im Array bewahrt) |
 
 Vollständige eval-Referenz:
 [DCA Evaluation](https://docs.contao.org/5.x/dev/reference/dca/fields/#evaluation)
@@ -888,7 +910,7 @@ Vollständige eval-Referenz:
 | `inputUnit` | Array | `$this->feldName['value']`, `$this->feldName['unit']` |
 | `pageTree` | Integer (ID) | `$this->feldName` |
 | `listWizard` | Array\<String\> | `foreach ($this->feldName ...)` |
-| `checkboxWizard` | Serialized Array | `deserialize($this->feldName)` |
+| `checkboxWizard` | Array\<String\> | `foreach ($this->feldName ...)` |
 | `list` (Rocksolid) | Array\<Object\> | `foreach`, Zugriff per `->` |
 | `standardField` | Abhängig vom Feld | Siehe jeweilige Contao-Doku |
 | `group` | -- | Kein Template-Zugriff |
@@ -911,9 +933,13 @@ wird. Kein toter HTML-Code, keine leeren Container.
 | `inputUnit` | `$this->feldName['value']` |
 | `list` (Rocksolid) | `$this->feldName` (leeres Array = falsy) |
 | `listWizard` | `$this->feldName` (leeres Array = falsy) |
-| `checkboxWizard` | `$this->feldName` (leerer String = falsy, vor `deserialize`) |
+| `checkboxWizard` | `$this->feldName` (leeres Array = falsy) |
 
-Felder die immer einen Wert haben (`select` mit
-Default ohne leere Option, Checkbox bei reinem
-Styling-Schalter) brauchen keine `if`-Prüfung --
-ihr Container wird immer gerendert.
+Felder die immer einen Wert haben brauchen keine
+`if`-Prüfung -- ihr Container wird immer
+gerendert. Typische Fälle:
+
+- `select`/`radio` ohne `includeBlankOption`
+  (immer eine Option selektiert).
+- `checkbox` als reiner Styling-Schalter
+  (beide Zustände erzeugen gültige Ausgabe).
