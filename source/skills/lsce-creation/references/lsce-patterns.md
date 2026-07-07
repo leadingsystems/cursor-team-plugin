@@ -352,6 +352,7 @@ im Config-Root:
 | `headline` | Überschrift + H-Tag-Select | Häufig |
 | `text` | Contao-Texteditor (TinyMCE) | Vereinfachung |
 | `image` | Contao-Bild (addImage + Größenoptimierung) | Bevorzugt für Bilder |
+| `space` | Abstand oben/unten | Selten in LSCEs |
 
 ### Zwei Einbindungs-Mechanismen
 
@@ -377,20 +378,9 @@ anderen Feldern.
 ]
 ```
 
-### Empfehlung: `image` als standardField
-
-`'image'` bindet Contaos vollständige
-Bildoptimierungs-Pipeline ein:
-- addImage-Checkbox
-- fileTree mit Vorschau
-- Bildgrößen-Konfiguration (responsive)
-- overwriteMeta (Alt, Title, Caption)
-
-Ein manuelles `fileTree` + `imageSize` ist nur
-dann sinnvoll, wenn:
-- Mehrere unabhängige Bilder im Element nötig sind.
-- Das Bild innerhalb einer `list` liegt.
-- Die addImage-Checkbox unerwünscht ist.
+Bild-Mechanismus-Wahl: siehe Abschnitt
+"Bild-Einbindung: Mechanismus-Wahl" unter
+Bild-Patterns.
 
 ### Template-Zugriff bei standardFields
 
@@ -399,7 +389,31 @@ dann sinnvoll, wenn:
 | `cssID` | `$this->cssID` (bereits im äußeren Wrapper) |
 | `headline` | `$this->headline` (Text), `$this->hl` (Tag) |
 | `text` | `$this->text` (HTML) |
-| `image` | `$this->addImage`, dann Contao-Bild-Template |
+| `image` | `$this->addImage`, `$this->picture`, `$this->caption` |
+| `space` | Wird automatisch als Inline-Style gerendert |
+
+Template-Code bei `image`:
+
+```php
+<?php if ($this->addImage): ?>
+    <figure class="image-container">
+        <?php $this->insert(
+            'picture_default', $this->picture
+        ); ?>
+        <?php if ($this->caption): ?>
+            <figcaption>
+                <?php echo $this->caption; ?>
+            </figcaption>
+        <?php endif; ?>
+    </figure>
+<?php endif; ?>
+```
+
+Rocksolid setzt `$this->addImage`, `$this->picture`,
+`$this->caption` etc. direkt auf dem Template
+(via `applyLegacyTemplateData`). Anders als bei
+`getImageObject` liegen die Properties hier auf
+`$this`, nicht auf einem zurückgegebenen Objekt.
 
 ---
 
