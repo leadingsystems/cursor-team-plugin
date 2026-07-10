@@ -9,25 +9,28 @@ description: >-
   Fragen zu rsce_-Elementen.
 ---
 
-# LSCE-Erstellung
+# LSCE-Erstellung und -Änderung
 
-ctx: Erstellung oder Modifikation von Leading
+ctx: Erstellung oder Änderung von Leading
 Systems Custom Elements (LSCEs) in
 Contao-Projekten mit Rocksolid Custom Elements.
 
 ## Anweisungen
 
 - ctx:LSCE-Arbeit => diesen Skill vollständig
-  lesen und den Vier-Phasen-Prozess befolgen.
-- Phase 2 (config.php) => Referenzdaten in
-  `./references/lsce-field-types.md` (relativ zum
-  Verzeichnis dieser `SKILL.md`) lesen.
-- Phase 3 (template.html5) => Referenzdaten in
-  `./references/lsce-patterns.md` (relativ zum
-  Verzeichnis dieser `SKILL.md`) lesen.
-- => !Referenzdaten pauschal vorab laden; nur
-  phasenabhängig.
-- => !LSCE-Dateien erzeugen vor
+  lesen und den Betriebsmodus bestimmen.
+- config.php erstellen | ändern =>
+  Referenzdaten in
+  `./references/lsce-field-types.md` (relativ
+  zum Verzeichnis dieser `SKILL.md`) lesen.
+- template.html5 erstellen | ändern =>
+  Referenzdaten in
+  `./references/lsce-patterns.md` (relativ
+  zum Verzeichnis dieser `SKILL.md`) lesen.
+- => !Referenzdaten pauschal vorab laden;
+  nur bei Bedarf.
+- ctx:Erstellungspfad =>
+  !LSCE-Dateien erzeugen vor
   Phase-1-Checkpoint-Freigabe.
 
 ## Schichtenmodell
@@ -55,7 +58,43 @@ Contao Core DCA
 - => !nicht existierende Rocksolid-`inputType`s
   erfinden.
 
-## Prozess
+## Betriebsmodus
+
+- PCF-Repository erkannt
+  (Regel `30-pcf-context-detection`) =>
+  Wissensmodus: Normative Regeln,
+  Referenzdaten, Konventionen anwenden;
+  Prozesspfade (Phasen, Checkpoints,
+  Skill-Report) überspringen.
+- Kein PCF-Repository =>
+  Einstiegslogik befolgen
+  (Erstellungs- oder Änderungspfad).
+
+## Einstiegslogik
+
+ctx: Kein PCF-Repository erkannt
+(Standardbetrieb).
+
+Prüfung: Existiert im Ziel-LSCE-Verzeichnis
+bereits eine `config.php`?
+
+- Nein => Erstellungspfad
+  (Vier-Phasen-Prozess).
+- Ja => Änderungspfad
+  (Bestandsaufnahme, Änderung,
+  Konsistenzprüfung).
+
+=> !Operator nach der Art der Änderung
+kategorisieren lassen (Bugfix vs.
+Modifikation). Der Änderungspfad behandelt
+beides identisch.
+
+| Pfad | Auslöser |
+|------|----------|
+| Erstellung | Neues LSCE, keine `config.php` |
+| Änderung | Bestehendes LSCE, `config.php` vorhanden |
+
+## Erstellungspfad
 
 ### Phase 1: Visuelle Analyse
 
@@ -142,6 +181,42 @@ req: Skill `lscss-styling` konsultieren.
    zusätzliche Wrapper-Elemente im Template
    benötigt (z.B. für Flex-Layouts), diese
    ergänzen und den Operator informieren.
+
+## Änderungspfad
+
+ctx: Bestehendes LSCE mit vorhandener
+`config.php`. Gilt für alle Änderungen --
+Fehlerbehebung, Scope-Änderung, Erweiterung.
+
+### Schritt 1: Bestandsaufnahme
+
+1. Bestehende `config.php`, `template.html5`
+   und `_style.scss` lesen.
+2. Aktuelle Feldstruktur und Template-Logik
+   erfassen.
+
+### Schritt 2: Änderung durchführen
+
+req: Referenzdaten für betroffene Dateien
+laden (siehe Anweisungen).
+
+1. Änderungsauftrag des Operators umsetzen.
+2. Normative Regeln einhalten
+   (gelten unverändert).
+
+### Schritt 3: Konsistenzprüfung
+
+Prüfe nach jeder Änderung:
+
+1. Jedes Feld in `config.php` hat eine
+   Template-Ausgabe (oder ist bewusst nur
+   Backend-relevant)?
+2. Template-Variablen (`$this->...`)
+   existieren als Felder in `config.php`?
+3. SCSS-Selektoren passen zum
+   Template-Markup?
+4. Inkonsistenzen => Operator informieren
+   und korrigieren.
 
 ## config.php Aufbau
 
@@ -351,3 +426,75 @@ Elements aufbauen können.
 Gruppen (`inputType => 'group'`) fassen
 thematisch zusammengehörige Felder zusammen
 und folgen derselben Frontend-Logik.
+
+## Skill-Report
+
+ctx: Abweichungen vom Skill während
+LSCE-Arbeit erkennen und dokumentieren.
+Stakeholder: Daniel Bitsch
+(bitsch@leadingsystems.de).
+
+### Trigger
+
+Report-Eintrag erstellen, wenn der Agent
+vom Skill abweichen musste oder keine
+Führung im Skill fand:
+
+| Kategorie | Beschreibung |
+|-----------|-------------|
+| Lücke | Situation erfordert Anleitung, die der Skill nicht enthält |
+| Konflikt | Skill-Anweisung widerspricht der Situation |
+| Ambiguität | Skill lässt mehrere Interpretationen zu |
+| Workaround | Skill-Anweisung musste umgangen werden |
+
+- => !Positivrückmeldungen.
+- Eintrag sofort beim Auftreten erstellen;
+  => !aufsammeln.
+
+### Ablageort
+
+- Beim ersten Report-Eintrag den Operator
+  nach einem geeigneten Ablageort fragen.
+- Format: Strukturierte Markdown-Datei.
+
+### Report-Format
+
+Jeder Eintrag enthält folgende Metadaten:
+
+| Feld | Inhalt |
+|------|--------|
+| Datum | Erstellungsdatum |
+| LSCE | Name des bearbeiteten LSCE |
+| Theme-Erweiterung | Paketname (Contao 5+) oder "nicht ermittelbar (Contao 4)" |
+| Pfad | Erstellung oder Änderung |
+| Kategorie | Lücke, Konflikt, Ambiguität oder Workaround |
+| Stakeholder | Daniel Bitsch (bitsch@leadingsystems.de) |
+
+Inhaltliche Abschnitte pro Eintrag:
+
+1. **Situation:** Was der Agent tun sollte
+   oder was der Operator verlangt hat.
+2. **Skill-Bezug:** Was der Skill dazu
+   sagt -- oder nicht. Konkrete Stelle in
+   `SKILL.md` oder Referenzdatei.
+3. **Agent-Entscheidung:** Was der Agent
+   stattdessen getan hat und warum.
+4. **Auswirkung:** Ergebnis,
+   Operator-Reaktion, Folgeprobleme.
+
+### Ablauf
+
+1. Reportable Situation erkannt => sofort
+   Eintrag erstellen. Beim ersten Report
+   den Operator nach Ablageort fragen.
+2. Operator informieren, dass ein
+   Report-Eintrag angelegt wurde und warum.
+3. Am Ende der Arbeit: Operator auf
+   vorliegende Report-Einträge hinweisen
+   und bitten, diese an den Stakeholder
+   weiterzuleiten. Dateien konkret nennen.
+4. Bei offenem Report den Operator
+   sensibilisieren, dem Agent mitzuteilen,
+   wann die Arbeit beendet wird -- damit
+   der Report (Abschnitt "Auswirkung")
+   abgeschlossen werden kann.
