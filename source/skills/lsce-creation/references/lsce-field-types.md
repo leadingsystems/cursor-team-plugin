@@ -807,6 +807,11 @@ zusätzliches `clr` -- es bricht automatisch um.
 `clr` nur nötig, wenn ein `w50`-Feld eine
 neue Zeile erzwingen soll.
 
+Vollständige `tl_class`-Referenz (Wirkung der
+einzelnen Klassen wie `w50`, `clr`, `long`, `cbx`,
+`m12`):
+[Arranging Fields](https://docs.contao.org/5.x/dev/reference/dca/palettes/#arranging-fields)
+
 ### `basicEntities` (Contao 5 -- Pflicht)
 
 Alle Felder mit Textausgabe im Frontend
