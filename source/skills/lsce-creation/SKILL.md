@@ -371,12 +371,33 @@ Korrekte Ausgabe:
 
 ### `if`-Prüfungen im Template
 
-Felder mit optionalem Inhalt per `if` prüfen,
-bevor der umgebende HTML-Container ausgegeben
-wird. Kein toter HTML-Code, keine leeren
-Container.
+Zwei Gründe erfordern eine `if`-Prüfung. Sie sind
+getrennt zu bewerten:
 
-Entscheidungslogik pro Feldtyp:
+1. Laufzeitsicherheit (immer): Array-Offset-Zugriff
+   (`$this->feld['value']`) und Iteration
+   (`foreach`, `count`) auf einem potenziell
+   fehlenden Feld erzeugen unter PHP 8.1 eine
+   Warning oder einen `TypeError`. Prüfung
+   funktional zwingend.
+2. Ausgabe-Sauberkeit: Kein toter HTML-Code, keine
+   leeren Container. Ein Feld, dessen Wert einen
+   umgebenden Container füllt, vor dessen Ausgabe
+   prüfen.
+
+Reine Skalar-Ausgabe (`echo $this->feld` bei
+`text`, `textarea`, `select`, `url` sowie
+verschachtelten Skalaren in Listen) ist
+warnungsfrei: Der Rocksolid-Getter liefert bei
+fehlendem Feld still `null`. Die Prüfung ist hier
+nur kosmetisch und entfällt, wenn kein umgebender
+Container leer bliebe.
+
+Ausnahme: Läuft ein Skalar durch eine typisierte
+String-Funktion, ist die Prüfung wieder funktional
+(PHP-8.1-Deprecation bei `null`).
+
+Einstufung und Prüfbedingung pro Feldtyp:
 siehe `lsce-field-types.md`.
 
 ### TinyMCE und HTML-Kontextprüfung

@@ -919,25 +919,60 @@ Vollständige eval-Referenz:
 
 ## `if`-Prüfungen: Entscheidungslogik
 
-Jedes optionale Feld wird im Template per `if`
-geprüft, bevor der umgebende Container ausgegeben
-wird. Kein toter HTML-Code, keine leeren Container.
+Zwei Achsen begründen eine `if`-Prüfung, getrennt
+zu bewerten:
 
-| inputType | Prüfbedingung |
-|-----------|---------------|
-| `text`, `textarea`, `url` | `$this->feldName` (leerer String = falsy) |
-| `select`, `radio` | `$this->feldName` (leerer Key = falsy) |
-| `checkbox` | `$this->feldName` (Boolean) |
-| `fileTree` (Einzelbild) | `$this->feldName && ($image = $this->getImageObject(...))` |
-| `fileTree` (Galerie) | `$this->feldName` (leeres Array = falsy) |
-| `inputUnit` | `$this->feldName['value']` |
-| `list` (Rocksolid) | `$this->feldName` (leeres Array = falsy) |
-| `listWizard` | `$this->feldName` (leeres Array = falsy) |
-| `checkboxWizard` | `$this->feldName` (leeres Array = falsy) |
+- **Laufzeitsicherheit:** Array-Offset (`['value']`)
+  und Iteration (`foreach`, `count`) auf einem
+  fehlenden Feld erzeugen unter PHP 8.1 eine Warning
+  bzw. einen `TypeError`. Prüfung funktional zwingend.
+- **Ausgabe-Sauberkeit:** Verhindert leere Container
+  und toten HTML-Code. Prüfung nötig, sobald ein
+  umgebender Container sonst leer bliebe.
 
-Felder die immer einen Wert haben brauchen keine
-`if`-Prüfung -- ihr Container wird immer
-gerendert. Typische Fälle:
+Reine Skalar-Ausgabe ist warnungsfrei: Der
+Rocksolid-Getter liefert bei fehlendem Feld
+(Top-Level wie verschachtelt) still `null`, und
+`echo null` erzeugt leere Ausgabe. Bei Array-Offset-
+und Iterationszugriffen ist der Feldzustand
+(`null` gegenüber leerer Teilstruktur) nicht
+garantiert -- dort deshalb defensiv immer prüfen.
+
+Die PHP-8.1-Folgen (Offset auf `null`, `foreach`
+über `null`, `count(null)`) sind allgemeine
+Sprachsemantik, nicht Rocksolid- oder
+Contao-spezifisch.
+
+| inputType / Zugriff | Prüfbedingung | Einstufung |
+|---------------------|---------------|------------|
+| `text`, `textarea`, `url` (`echo`) | `$this->feldName` | kosmetisch (1) |
+| `select`, `radio` (`echo`) | `$this->feldName` | kosmetisch |
+| `checkbox` | `$this->feldName` (Boolean) | kosmetisch |
+| Verschachtelter Skalar `$item->feld` | `$item->feld` | kosmetisch |
+| Bild via `getImageObject()` | `$this->feldName && ($image = $this->getImageObject(...))` | kosmetisch (2) |
+| `inputUnit` (`['value']`/`['unit']`) | `$this->feldName['value']` | funktional zwingend |
+| Verschachtelter Offset `$item->feld['value']` | `$item->feld` vorschalten | funktional zwingend |
+| `fileTree` (Galerie) `foreach` | `$this->feldName` (leeres Array = falsy) | funktional zwingend |
+| `list` (Rocksolid) `foreach`/`count` | `$this->feldName` | funktional zwingend (3) |
+| `listWizard` `foreach` | `$this->feldName` | funktional zwingend |
+| `checkboxWizard` `foreach` | `$this->feldName` | funktional zwingend |
+
+Fußnoten:
+
+- (1) Funktional, sobald `null` an eine typisierte
+  String-Funktion übergeben wird
+  (PHP-8.1-Deprecation).
+- (2) `getImageObject()` liefert bei leerem Wert
+  `null`. Die Prüfung ist zugleich die
+  Variablenzuweisung und daher praktisch immer
+  vorhanden.
+- (3) Regulär durch die Rocksolid-Leer-Listen-
+  Initialisierung (`[]`) abgefedert, bei
+  importierten oder Altdaten aber nicht garantiert
+  -- defensiv immer prüfen.
+
+Felder, die immer einen Wert haben, brauchen keine
+`if`-Prüfung -- ihr Container wird immer gerendert:
 
 - `select`/`radio` ohne `includeBlankOption`
   (immer eine Option selektiert).
