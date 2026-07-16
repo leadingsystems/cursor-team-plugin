@@ -78,6 +78,17 @@ LSCE-Templates. Alle basieren auf
 `$this->getImageObject()` und dem
 `picture_default`-Template.
 
+`picture_default` gibt die Bilddaten aus
+`$image->picture` aus: ein `<img>` mit `src`,
+`srcset`, `sizes`, `width`, `height` und `alt`
+(optional `title` und `loading`). Sind für die
+gewählte Bildgröße responsive Quellen
+konfiguriert, wird zusätzlich ein `<picture>`
+mit `<source>`-Tags gerendert. Diese Attribute
+und die Responsivität liefert Contao -- die
+manuellen Varianten 1-4 müssen sie nicht selbst
+bauen.
+
 ### Variante 1: Einzelbild (Basis)
 
 Einfachste Form -- Bild mit Größenoptimierung.
@@ -205,9 +216,10 @@ Drei Wege, ein Bild ins LSCE einzubinden:
 
 Bindet Contaos vollständige Bild-Pipeline ein
 (addImage-Checkbox, Bildgrößen-Konfiguration,
-Viewport-Optimierung, responsive Images). Das
-Bild erscheint an Contaos Standardposition
-(unterhalb der eigenen Felder).
+Viewport-Optimierung, responsive Images bei
+konfigurierten Bildgrößen). Das Bild erscheint
+an Contaos Standardposition (unterhalb der
+eigenen Felder).
 
 **2. Positioniertes `standardField` (frei platziert):**
 
