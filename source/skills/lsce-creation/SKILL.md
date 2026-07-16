@@ -399,10 +399,22 @@ als Literaltext im Frontend.
 - => !`htmlspecialchars()` auf LSCE-Feldwerte.
 - => !`html_entity_decode()` auf LSCE-Feldwerte.
 
-Contao kodiert Benutzereingaben bereits beim
-Speichern im Backend (Input-Layer-Kodierung).
-`htmlspecialchars()` erzeugt Doppelkodierung
-(z.B. `&amp;#34;` statt `"`).
+Grund: Kodierung passiert auf zwei getrennten Ebenen.
+
+1. Input-Layer (beim Speichern): Contao kodiert die
+   Eingabe schon beim Einlesen des Requests
+   (`Input::encodeInput`, Modus `encodeAll`). Betroffen
+   sind `# < > ( ) \ = " '` als numerische Entities
+   (`"` wird zu `&#34;`). `&` bleibt hier unberührt.
+2. Output-Layer (bei der Ausgabe): `htmlspecialchars()`
+   bzw. `StringUtil::specialchars()` kodiert `& < > " '`
+   als Named Entities (`&` wird zu `&amp;`).
+
+Ein manuelles `htmlspecialchars()` im Template liegt auf
+dem Output-Layer und trifft auf bereits input-kodierte
+Werte: Das `&` in `&#34;` wird zu `&amp;#34;`
+(Doppelkodierung). Im Frontend erscheint dann `&#34;`
+als Literaltext statt `"`.
 
 Korrekte Ausgabe:
 `<?php echo $this->feldname; ?>`
