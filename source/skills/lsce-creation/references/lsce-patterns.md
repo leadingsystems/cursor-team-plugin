@@ -352,7 +352,34 @@ im Config-Root:
 | `headline` | Überschrift + H-Tag-Select | Häufig |
 | `text` | Contao-Texteditor (TinyMCE) | Vereinfachung |
 | `image` | Contao-Bild (addImage + Größenoptimierung) | Bevorzugt für Bilder |
-| `space` | Abstand oben/unten | Selten in LSCEs |
+| `columns` | Rocksolid-Columns-Layout | Nicht verwenden (siehe Hinweis) |
+
+Rocksolid wertet ausschließlich diese fünf Werte aus
+(`generatePalette()`). Ein sechster, historischer Wert
+`space` wird heute nicht mehr abgefragt (siehe Hinweise).
+
+**Hinweis zu `space` (Legacy, nicht verwenden):** Die
+offizielle RSCE-Doku listet `space` bis heute als
+Standardfeld. Der Wert stammt aus der Contao-3-Ära: Dort
+hatte `tl_content` ein `space`-Feld (Abstand oben/unten),
+und Rocksolid v1 reichte es an die Palette durch. Seit
+Contao 4 ist das Feld aus `tl_content` entfernt, und das
+aktuelle Rocksolid fragt `space` in `generatePalette()`
+nicht mehr ab. Ein `'space'` im `standardFields`-Array
+bleibt daher wirkungslos. Nur wegen der veralteten Doku
+hier aufgeführt, damit der Wert nicht irrtümlich als
+gültig übernommen wird.
+
+**Hinweis zu `columns` (setzt Erweiterung voraus):** Nur
+hier aufgeführt, damit der Wert nicht aus dem Namen falsch
+gedeutet wird. `columns` setzt die separate Erweiterung
+`madeyourday/contao-rocksolid-columns` voraus (in der
+`composer.json` von Rocksolid nur unter `suggest`, nicht
+`require`). Der Wert greift auf die von dieser Erweiterung
+bereitgestellte Palette `rs_columns_start` zu; fehlt die
+Erweiterung, läuft `columns` ins Leere. Für Custom
+Elements ist der Wert nicht gedacht -- Spalten-Layouts
+gehören zum Rocksolid-Columns-Feature, nicht zum LSCE.
 
 ### Zwei Einbindungs-Mechanismen
 
@@ -390,7 +417,6 @@ Bild-Patterns.
 | `headline` | `$this->headline` (Text), `$this->hl` (Tag) |
 | `text` | `$this->text` (HTML) |
 | `image` | `$this->addImage`, `$this->picture`, `$this->caption` |
-| `space` | Wird automatisch als Inline-Style gerendert |
 
 Template-Code bei `image`:
 

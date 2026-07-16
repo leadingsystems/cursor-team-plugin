@@ -301,16 +301,24 @@ nicht `image`.
 
 Das Root-Array `standardFields` im Config-Root
 bindet vordefinierte Feld-Gruppen an festen
-Positionen ein. Verfügbare Werte
-([RSCE-Doku](https://rocksolidthemes.com/de/contao/plugins/custom-content-elements/dokumentation)):
+Positionen ein. Code-verifizierte Werte
+(`generatePalette()` in Rocksolid; die
+[RSCE-Doku](https://rocksolidthemes.com/de/contao/plugins/custom-content-elements/dokumentation)
+ist an dieser Stelle veraltet):
 
 | Wert | Verfügbar für | Wirkung |
 |------|--------------|---------|
 | `headline` | Content + Module | Überschrift + H-Tag |
 | `cssID` | Content + Module | CSS-ID + CSS-Klasse |
-| `space` | Content + Module | Abstand oben/unten |
 | `text` | Nur Content | Contao-Texteditor |
 | `image` | Nur Content | `addImage` + Bild-Pipeline (inkl. `size`) |
+| `columns` | Nur Content | Rocksolid-Columns; setzt Erweiterung voraus, nicht für LSCEs |
+
+Nicht verwenden: `space` (Legacy aus der Contao-3-Ära,
+seit Contao 4 wirkungslos) und `columns` (setzt die
+Erweiterung `contao-rocksolid-columns` voraus). Details
+und Belege siehe `lsce-patterns.md`, Abschnitt
+"`standardFields`-Tabelle".
 
 `inputType => 'standardField'` im
 `fields`-Array ist ein anderer Mechanismus:
