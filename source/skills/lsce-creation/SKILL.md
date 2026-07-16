@@ -148,18 +148,55 @@ Aufgaben:
    ja, berücksichtigen. Falls nein,
    Best-Practice-basierte Annahmen formulieren
    und dem Operator im Checkpoint vorlegen.
+5. Semantische Labels im Mockup (z.B.
+   "Headline", "Subheadline", "Fließtext",
+   "Button") als Rollen-Hinweis für die
+   Feld-Klassifikation nutzen, nicht als Inhalt
+   (siehe "Minimalistisches Prinzip": keine
+   Standardwerte aus Screenshots). Fehlt ein
+   Label, die Rolle aus dem visuellen Kontext
+   ableiten.
 
-Ausgabe für den Checkpoint:
+Ausgabe für den Checkpoint (Pflichtformat):
 
-- Identifizierte Elemente als Auflistung
-  (Element, vorgeschlagener Feldtyp,
-  editierbar ja/nein).
-- Offene Scope-Fragen an den Operator
-  (z.B. "Soll das Icon editierbar sein oder
-  reicht eine feste CSS-Klasse?").
-- Responsive-Verhalten: Zusammenfassung
-  vorliegender Vorgaben oder eigene Annahmen
-  (als solche gekennzeichnet).
+Ziel ist, das Mockup so zurückzuspiegeln, dass
+der Operator Abweichungen sofort erkennt -- nicht
+bloß eine Feldliste.
+
+1. Struktur-Playback (Einleitung, wenige Sätze):
+   die wahrgenommene Anordnung in Worten --
+   Regionen, Hierarchie (oben nach unten),
+   Wiederholungsgruppen.
+2. Abgleich-Tabelle mit einer Zeile je sichtbarer
+   Region und den Spalten:
+   - Sichtbare Region (mit visueller Verortung,
+     z.B. "oben links", "Bild rechts").
+   - Vorgeschlagenes Feld (Typ), oder "--" bei
+     statischen Elementen.
+   - Einstufung: editierbar | bewusst statisch |
+     unsicher.
+   Zwei-Wege-Abgleich: kein Feld ohne sichtbares
+   Gegenstück, keine sichtbare Region ohne
+   Einstufung (auch bewusst statische und
+   unsichere Elemente auflisten).
+3. Offene Scope-Fragen an den Operator (z.B.
+   "Soll das Icon editierbar sein oder reicht
+   eine feste CSS-Klasse?").
+4. Responsive-Verhalten: Zusammenfassung
+   vorliegender Vorgaben oder eigene Annahmen
+   (als solche gekennzeichnet).
+
+Optionale Eskalationsstufe (nicht verpflichtend):
+
+Bei komplexen oder mehrdeutigen Layouts
+(verschachtelte Strukturen, mehrere
+Wiederholungsgruppen, unklare räumliche
+Zuordnung) zusätzlich ein leichtgewichtiges
+visuelles Artefakt anbieten -- grobe
+Wireframe-Blockskizze oder annotiertes Mockup mit
+nummerierten Regionen (Nummern = Zeilen der
+Abgleich-Tabelle). Bei einfachen Layouts entfällt
+sie.
 
 ### Phase-1-Checkpoint (Pflicht)
 
