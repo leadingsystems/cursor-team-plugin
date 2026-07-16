@@ -833,12 +833,15 @@ Ohne dieses Flag werden Basic Entities
 aufgelöst und erscheinen als Literaltext im
 Frontend.
 
-Ausnahmen (kein `basicEntities`):
-- Rein technische Felder ohne Frontend-Ausgabe
-  (CSS-Klassen, E-Mail-Adressen, ARIA-Labels).
-- `url`-Felder (kein Textinhalt).
+Ausnahmen (kein `basicEntities`) -- Kriterium:
+nur freier, vom Redakteur geschriebener
+Frontend-Text erhält das Flag; strukturierte
+oder technische Werte nicht:
+- `url`-Felder -- Konvertierung schadet hier
+  (`&` in Query-Strings würde zu `[&]`).
 - `select`/`radio`/`checkbox` (Optionswerte,
   kein Freitext).
+- CSS-Klassen, E-Mail-Adressen.
 
 ### `rte` (Rich Text Editor)
 

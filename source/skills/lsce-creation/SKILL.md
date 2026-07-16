@@ -379,9 +379,15 @@ erhalten `'basicEntities' => true` in `eval`:
 - `inputType => 'text'`
 - `inputType => 'textarea'` (mit und ohne RTE)
 
-Ausnahmen: Rein technische Felder ohne
-Frontend-Textausgabe (CSS-Klassen,
-E-Mail-Adressen, ARIA-Labels).
+Kriterium: Nur freier, vom Redakteur
+geschriebener Frontend-Text erhält das Flag.
+Strukturierte oder rein technische Werte nicht:
+
+- `url`-Felder -- Konvertierung schadet hier
+  (`&` in Query-Strings würde zu `[&]`).
+- `select`/`radio`/`checkbox` (Optionswerte,
+  kein Freitext).
+- CSS-Klassen, E-Mail-Adressen.
 
 Seit Contao 5 werden Basic Entities
 (`[nbsp]`, `[-]`) nicht mehr implizit
