@@ -846,23 +846,53 @@ oder technische Werte nicht:
 ### `rte` (Rich Text Editor)
 
 `'rte' => 'tinyMCE'` aktiviert den
-Standard-TinyMCE-Editor.
-
-Prüfen ob der Ausgabe-Kontext im Template
-Block-Elemente (`<p>`) erlaubt. Falls die
-RTE-Ausgabe in ein Heading (`<h1>`-`<h6>`)
-oder ein anderes Inline-Element fließt:
-eigenes Preset mit `forced_root_block: false`
-verwenden (z.B. `'rte' => 'tinyHeadline'`).
-
-Falls die Ausgabe in einen Block-Kontext
-(`<div>`, `<section>`) fließt, ist das
-Standard-TinyMCE-Verhalten mit `<p>` korrekt.
-
-Preset-Datei nach
+Standard-TinyMCE-Editor. Ein eigenes Preset als
+`be_*`-Template nach
 `src/Resources/contao/templates/` ablegen --
 nicht in `lsce_local/` (kein registrierter
 Template-Pfad).
+
+TinyMCE wickelt den Inhalt in einen `<p>`-Block.
+Seit TinyMCE 6 ist dieser Wrapper nicht per
+Konfiguration abschaltbar: `forced_root_block`
+braucht einen nicht-leeren Block-Tag, `false`
+und `''` sind entfernt (Abgrenzung zu TinyMCE 5).
+
+HTML-Kontext prüfen:
+
+- Block-Kontext (`<div>`, `<section>`): `<p>`
+  ist valide, Standard-TinyMCE passt.
+- Heading/Inline (`<h1>`-`<h6>`, `<span>`, ...):
+  `<p>` erzeugt ungültiges HTML. Da der Wrapper
+  nicht abschaltbar ist, den Wert eingangsseitig
+  normalisieren (siehe `save_callback` unten).
+  => !greedy Regex im Template (bricht bei
+  mehreren Absätzen).
+
+### Feld-`save_callback`
+
+Rocksolid reicht ein feldeigenes `save_callback`
+an das erzeugte DCA-Feld durch. Contao ruft es
+beim Speichern mit `($value, $dc)` auf und
+verwendet den Rückgabewert. So lässt sich z.B.
+der `<p>`-Wrapper eines Headline-RTE einmalig
+beim Speichern entfernen statt im Template.
+
+Ablageform nach Projektstruktur:
+
+- Contao 5 mit Themeerweiterung (Bundle,
+  bevorzugt): Methode einer autoloadbaren Klasse
+  im Bundle-`src/`, referenziert als
+  `[['App\\Lsce\\HeadlineCleaner', 'clean']]`.
+  Wiederverwendbar und testbar.
+- Rein dateibasiert (Contao 4.13 / Merconis 5.0,
+  kein Bundle): Closure direkt in der `config.php`
+  (`[static function ($value, $dc) { ... }]`), da
+  nichts autoloadbar ist.
+
+Der Callback erhält das rohe RTE-HTML (inkl.
+`<p>`); Rocksolids eigener Speicher-Callback läuft
+danach und schreibt den bereinigten Wert.
 
 ### `mandatory`
 

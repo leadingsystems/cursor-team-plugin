@@ -452,27 +452,33 @@ siehe `lsce-field-types.md`.
 
 ### TinyMCE und HTML-Kontextprüfung
 
-TinyMCE erzeugt standardmäßig `<p>`-Wrapper
-um Inhalte. Vor dem Einsatz eines RTE-Feldes
-prüfen: Ist der Ausgabe-Kontext im Template
-mit Block-Elementen wie `<p>` kompatibel?
+Ein RTE-Feld ist möglich. TinyMCE wickelt den
+Inhalt aber in einen Block-Wrapper (`<p>`), und
+dieser lässt sich seit TinyMCE 6 nicht mehr per
+Konfiguration entfernen: `forced_root_block`
+verlangt einen nicht-leeren Block-Tag; `false`
+und `''` sind entfernt (Abgrenzung zu TinyMCE 5,
+wo `false` funktionierte).
 
-- Ausgabe in `<div>`, `<section>`, `<li>`:
-  `<p>` ist valide -- Standard-TinyMCE passt.
-- Ausgabe in `<h1>`-`<h6>`, `<span>`,
-  `<button>`, `<a>`: `<p>` erzeugt ungültiges
-  HTML -- eigenes Preset mit
-  `forced_root_block: false` verwenden.
+Beim Einsatz beachten:
 
-Preset-Datei nach
-`src/Resources/contao/templates/` ablegen
-(nicht in `lsce_local/` -- kein registrierter
-Template-Pfad).
+- Eigenes Preset als `be_*`-Template nach
+  `src/Resources/contao/templates/` ablegen
+  (registrierter Pfad; nicht `lsce_local/`).
+- HTML-Kontext prüfen: In einem Block-Kontext
+  (`<div>`, `<section>`) ist `<p>` valide. In
+  `<h1>`-`<h6>`, `<span>`, `<button>`, `<a>`
+  erzeugt `<p>` ungültiges HTML.
+- Bei drohend inkonsistenter HTML-Semantik keine
+  feste Rezeptvorgabe -- eine saubere Lösung
+  ableiten. Sauberer Hebel: Wert eingangsseitig
+  per Feld-`save_callback` normalisieren
+  (siehe `lsce-field-types.md`).
 
-- => !Regex-Workarounds zum Entfernen von
-  `<p>`-Wrappern im Template. Das Problem
-  an der Quelle (Preset) lösen, nicht im
-  Output.
+- => !Regex-Workarounds zum Entfernen des
+  `<p>`-Wrappers im Template (greedy `.*` bricht
+  bei mehreren Absätzen). Am Eingang lösen, nicht
+  im Output.
 
 ### Minimalistisches Prinzip
 
