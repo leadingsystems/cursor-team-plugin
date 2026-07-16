@@ -94,6 +94,38 @@ beides identisch.
 | Erstellung | Neues LSCE, keine `config.php` |
 | Änderung | Bestehendes LSCE, `config.php` vorhanden |
 
+## Contao-Version bestimmen
+
+ctx: Erstellungspfad, Änderungspfad und
+Wissensmodus (PCF). Gilt in allen Modi -- der
+Agent muss wissen, für welche Contao-Version er
+baut, bevor versionsabhängige Entscheidungen
+fallen (`basicEntities`, Pfad-Ermittlung).
+
+Objektiv aus dem Projekt ableiten, nicht
+annehmen. Erster eindeutiger Treffer gilt:
+
+1. `composer.lock` => installierte Version von
+   `contao/core-bundle` => Major (4 | 5+).
+2. miss:`composer.lock` => `composer.json`,
+   Constraint von `contao/core-bundle`
+   (| `contao/manager-bundle`). Genau ein Major
+   (z.B. `^5.0`) => verwenden. Constraint über
+   mehrere Majors (`^4.13 || ^5.0`) => nicht
+   eindeutig.
+3. nicht eindeutig => Fallback nach Modus.
+
+Fallback:
+
+- Standardbetrieb => Operator fragen.
+- Wissensmodus (PCF) => Implementation Context
+  prüfen. miss:Angabe => Contao 5 annehmen & die
+  Annahme im Arbeitsergebnis explizit vermerken
+  (kein Operator, kein Skill-Report verfügbar).
+
+default:Contao 5 gilt nur als Fallback nach
+Stufe 3, nicht als blinde Vorannahme.
+
 ## Erstellungspfad
 
 ### Phase 1: Visuelle Analyse
@@ -153,11 +185,10 @@ req: `./references/lsce-field-types.md` lesen.
 3. Feldtypen, `eval`-Optionen und `tl_class`
    gemäß `lsce-field-types.md` wählen.
 
-Contao-Version:
-
-- default: Contao 5.
-- Contao 4 nur bei expliziter Operator-Angabe.
-- Version unklar => Operator fragen.
+Contao-Version: gemäß Abschnitt "Contao-Version
+bestimmen" (vor Phase 2 ermittelt). Steuert
+versionsabhängige `eval`-Optionen (z.B.
+`basicEntities`).
 
 ### Phase 3: template.html5 aufbauen
 
@@ -282,7 +313,8 @@ fragen.
 => !Workspace-weite Suche nach Konstanten
 (Symlinks erzeugen Duplikate).
 
-Contao 4 nur bei expliziter Operator-Angabe.
+Version gemäß Abschnitt "Contao-Version
+bestimmen".
 
 ### LSCE-Erstellungspfad (`lsce_local`)
 
