@@ -209,6 +209,9 @@ wartet auf Operator-Bestätigung.
 - Operator bestätigt => weiter mit Phase 2.
 - Operator korrigiert => Phase-1-Ergebnis
   anpassen, erneut vorlegen.
+- Nach Freigabe kein weiterer Operator-Checkpoint:
+  Phase 2-4 folgen der internen `req:`-Kette und
+  werden in einem Arbeitsgang geliefert.
 
 ### Phase 2: config.php aufbauen
 
@@ -245,10 +248,16 @@ req: Skill `lscss-styling` konsultieren.
    `.ce_rsce_<name> { }` erstellen.
 2. Responsive Verhalten über
    LSCSS-Breakpoint-Mixins.
-3. Rückkopplung auf Phase 3 möglich: Werden
-   zusätzliche Wrapper-Elemente im Template
-   benötigt (z.B. für Flex-Layouts), diese
-   ergänzen und den Operator informieren.
+3. Rückkopplung auf Phase 3 möglich: Zeigt sich
+   beim Styling, dass das Template angepasst werden
+   muss (z.B. zusätzliche Wrapper-Elemente für
+   Flex-Layouts), die Anpassung vornehmen und den
+   Operator informieren (autonom, kein Checkpoint),
+   solange sie rein Layout/Präsentation betrifft.
+   Grenze: Reicht die Anpassung darüber hinaus
+   (Felder umgruppieren, Ausgabe-Logik oder Semantik
+   ändern), verlässt sie den in Phase 1 freigegebenen
+   Scope => zurück an den Operator.
 
 ## Änderungspfad
 
