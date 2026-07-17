@@ -365,6 +365,59 @@ Mechanismus 3 nur bei den genannten Sonderfällen.
 
 ---
 
+## Datei-Referenzen auflösen (UUID)
+
+`fileTree`-Felder liefern eine UUID, keinen Pfad. Welcher Weg die
+UUID zur Ausgabe bringt, hängt vom Anwendungsfall ab -- den jeweils
+obersten passenden Weg wählen.
+
+- Bild => `getImageObject()` (Image-Studio-Pipeline, responsive
+  `<picture>` inkl. Metadaten). Siehe Abschnitt "Bild-Patterns".
+- Nicht-Bild, nur als URL/Pfad in einem Ausgabe-Attribut ->
+  Insert-Tag `{{file::<uuid>}}`. Contao ersetzt es im
+  Frontend-Output durch Pfad/URL; umbenennungssicher, kein PHP
+  nötig. Die UUID muss als String vorliegen (liegt sie binär vor,
+  mit `Contao\StringUtil::binToUuid()` wandeln).
+- Nicht-Bild, Pfad wird in PHP-Logik gebraucht (Bedingung,
+  Weiterverarbeitung) => `Contao\FilesModel::findByUuid($uuid)`.
+  `->path` liefert den Pfad relativ zum Projekt-Root (`files/...`);
+  `findByUuid()` akzeptiert den `fileTree`-Rohwert direkt.
+
+```php
+<?php if (($file = Contao\FilesModel::findByUuid($this->downloadFile)) !== null): ?>
+    <a href="<?php echo $file->path; ?>" download>
+        <?php echo $this->linkText; ?>
+    </a>
+<?php endif; ?>
+```
+
+Regeln:
+
+- Insert-Tags im Markup werden **zuletzt** aufgelöst (globaler
+  Output-Pass, nicht im Template). Literal `{{file::...}}` wirkt
+  daher nur in der Ausgabe, nicht als Eingabe für PHP-Logik. Wird
+  der Wert in PHP gebraucht, das Tag vorab rendern -- der Service
+  `contao.insert_tag.parser` ist `public`:
+
+```php
+$parser = Contao\System::getContainer()->get('contao.insert_tag.parser');
+$url = $parser->replaceInline('{{file::' . $uuid . '}}');
+```
+
+- => !die veraltete Methode `render()` (deprecated seit 5.1,
+  entfällt in Contao 6); für ein Einzeltag
+  `renderTag()->getValue()`. Reiner Dateipfad => `FilesModel`
+  bleibt der direktere Weg.
+- => !`VirtualFilesystem` / `Dbafs`-Service im LSCE. Der neue
+  Filesystem-Stack ist im Core `@experimental` (BC-Breaks
+  vorbehalten).
+- `FilesModel` ist Legacy, aber nicht `@deprecated` und ohne
+  Removal-Marker -- für Nicht-Bild-Pfade die stabile Wahl, solange
+  der moderne Ersatz experimentell ist. => !als "veraltet"
+  abwerten.
+
+---
+
 ## Hyperlink/Button-Pattern
 
 Wiederholbar-angelegt als `list`-Feld mit
