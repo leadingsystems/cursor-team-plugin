@@ -392,10 +392,9 @@ Optional:
     <?php foreach (
         $this->hyperlinkBoxes as $link
     ): ?>
-        <a class="<name>__link <?php echo $link->hyperlinkClass
-                ? $link->hyperlinkClass . ' '
-                : '';
-            ?>hyperlink_txt"
+        <a class="<name>__link<?php echo $link->hyperlinkClass
+                ? ' ' . $link->hyperlinkClass
+                : ''; ?>"
             href="<?php echo $link->hyperlinkHref; ?>"
             <?php if ($link->hyperlinkNewWindow): ?>
                 target="_blank"
