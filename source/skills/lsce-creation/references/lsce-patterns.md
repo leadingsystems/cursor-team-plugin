@@ -8,66 +8,176 @@ geladen -- nicht pauschal vorab.
 
 ## CSS-Klassennamens-Schema
 
-CSS-Klassen in `template.html5`: Kebab-Case,
-semantisch beschreibend. Kein BEM, kein LSCE-Name
-als Präfix.
+CSS-Klassen im eigenen `template.html5`-Markup
+folgen BEM (Block, Element, Modifier). Der Block
+ist der LSCE-Name in Kebab-Case.
 
-SCSS-Nesting unter `.ce_rsce_<name>` übernimmt die
-Kapselung -- BEM-Blöcke (`element__child`) sind
-daher überflüssig.
+- Block: `<name>` (z.B. `hero-banner`).
+- Element: `<name>__<teil>` (Doppel-Unterstrich),
+  z.B. `hero-banner__title`.
+- Modifier: `<name>--<variante>`
+  (Doppel-Bindestrich), z.B. `hero-banner--dark`;
+  steht am selben Element wie die Basisklasse.
+- Zustand: `is-*` / `has-*` (SMACSS), nur für per
+  JS/Runtime umgeschaltete Zustände (z.B.
+  `is-active`, `is-open`) -- getrennt von den
+  Varianten-Modifiern.
 
-### Suffix-Vokabular
+Das SCSS bleibt unter `.ce_rsce_<name>` genestet;
+das Nesting dient als Kapselungs-Sicherheitsnetz.
+Die dadurch entstehende Doppel-Absicherung
+(Nesting + BEM-Namen) ist bewusst in Kauf
+genommen.
 
-| Suffix | Verwendung |
-|--------|-----------|
-| `-container` | Umschließt einen Inhaltstyp |
-| `-wrapper` | Layout-Hülle für Positionierung |
-| `-row` / `-list` | Horizontale/vertikale Aufzählung |
-| `-content` | Eigentlicher Inhalt innerhalb Struktur |
-| `-item` | Einzelelement in Wiederholung |
+### Vokabular (Element-/Modifier-Rollen)
 
-### Beispiele
+| Rolle | Syntax | Beispiel |
+|-------|--------|----------|
+| Block | `<name>` | `hero-banner` |
+| Element | `<name>__<teil>` | `hero-banner__media` |
+| Modifier | `<name>--<variante>` | `hero-banner--wide` |
+| Zustand | `is-*` / `has-*` | `is-active` |
 
-```html
-<div class="image-container">...</div>
-<div class="text-container">...</div>
-<div class="tile-wrapper">...</div>
-<div class="button-row">...</div>
-```
+Element-Namen beschreiben die Rolle im Element,
+nicht das HTML-Tag (`__media`, nicht `__div`).
+Verschachtelte Elemente werden nicht verkettet:
+`<name>__list-item`, nicht `<name>__list__item`.
 
-### Dynamische Modifikatoren
-
-Per PHP-Ausgabe als Klasse auf dem passenden
-Element:
+### Beispiel
 
 ```php
-<div class="tile-wrapper direction-<?php
-    echo $this->direction;
-?>">
+<div class="<?php echo $this->class; ?> block hero-banner hero-banner--<?php echo $this->layout; ?>"<?php echo $this->cssID; ?>>
+    <div class="hero-banner__media">...</div>
+    <div class="hero-banner__body">
+        <h2 class="hero-banner__title">...</h2>
+    </div>
+</div>
 ```
+
+Der Modifier-Wert kommt config-defaulted (siehe
+`lsce-field-types.md`, `default`). Zusammenbau
+mehrerer oder bedingter Modifier: siehe folgenden
+Abschnitt.
+
+### Dynamische Modifier
+
+Modifier-Klassen entstehen aus Backend-Feldern
+(meist `select`) oder aus Runtime-Zuständen. Zwei
+Fälle nach Anzahl/Bedingtheit.
+
+**Ein Modifier -- inline:**
+
+```php
+<div class="<?php echo $this->class; ?> block hero-banner hero-banner--<?php echo $this->layout; ?>"<?php echo $this->cssID; ?>>
+```
+
+**Mehrere oder bedingte Modifier -- Array + `implode`:**
+
+Klassen in einem Array sammeln und am Wrapper
+zusammenfügen. Das hält das `class`-Attribut
+lesbar und erlaubt bedingtes Anhängen.
+
+```php
+<?php
+    $modifierClasses = ['hero-banner'];
+    $modifierClasses[] = 'hero-banner--' . $this->layout;
+    if ($this->highlight) {
+        $modifierClasses[] = 'is-highlighted';
+    }
+?>
+<div class="<?php echo $this->class; ?> block <?php echo implode(' ', $modifierClasses); ?>"<?php echo $this->cssID; ?>>
+```
+
+Regeln:
+
+- Defaults gehören in die `config.php`
+  (`'default' => ...`), nicht als `?:`-Ersatz ins
+  Template. => !denselben Default an zwei Orten
+  pflegen.
+- Das Array ist reine Ausgabe. Einen Einzelwert
+  immer aus dem Feld lesen (`$this->layout`), nie
+  aus dem Array zurückholen (numerischer Index +
+  zusammengesetzter String -- fragil).
+- Schwelle: ein immer vorhandener Modifier =>
+  inline. Array erst ab mehreren oder bedingten
+  Modifiern.
+- Kollidierende Werte (z.B. zwei `left`/`right`-
+  Selects) => Modifier am jeweiligen Element statt
+  am Block: `hero-banner__text--left`,
+  `hero-banner__media--left` (gleicher Wert, per
+  Element unterschieden). Alternativ am Block mit
+  Belang im Namen: `hero-banner--text-left`.
+  => !Präfixing in die `config.php` verlagern; der
+  Rohwert bleibt semantisch (`left`).
 
 ### Äußerster Wrapper
 
 Der äußerste Wrapper nutzt `$this->class`
 (enthält automatisch `ce_rsce_<name>` +
-Redakteur-Klassen aus dem Backend):
+Redakteur-Klassen aus dem Backend). Der eigene
+BEM-Block wird zusätzlich gesetzt:
 
 ```php
-<div class="<?php echo $this->class; ?> block"
+<div class="<?php echo $this->class; ?> block hero-banner"
     <?php echo $this->cssID; ?>>
 ```
 
-- Eigene CSS-Klassen primär auf innere
-  Strukturelemente. Dynamische
-  Steuerungsklassen auf dem äußeren Wrapper
-  sind erlaubt (z.B. Positionierung,
-  Layout-Varianten basierend auf
-  Backend-Eingaben).
 - `block` muss manuell gesetzt werden. Contao
   setzt diese Klasse bei nativen Elementen
   automatisch über `block_searchable.html.twig`,
   aber RSCEs durchlaufen dieses Basis-Template
   nicht.
+- Eigene BEM-Klassen primär auf innere
+  Strukturelemente. Modifier/Zustände am Wrapper
+  sind erlaubt, wenn sie von Backend-Eingaben
+  oder Runtime-Zuständen abhängen.
+
+### Geltungsbereich: nur eigene Klassen
+
+Grundsatz: BEM gilt ausschließlich für Klassen,
+die der Agent selbst im eigenen Markup vergibt.
+Jede Klasse, die von Contao, Rocksolid oder einer
+Drittanbieter-Erweiterung stammt, liegt außerhalb
+des Geltungsbereichs und bleibt unverändert --
+unabhängig davon, ob sie unten aufgeführt ist.
+=> !in BEM "korrigieren".
+
+Entscheidungsregel: Herkunft einer Klasse unklar
+=> als fremd behandeln (unverändert lassen);
+=> !BEM erzwingen.
+
+Häufige Beispiele (nicht abschließend):
+
+- Auto-Wrapper `ce_rsce_<name>` & `block`.
+- Bild/Figure aus `picture_default` /
+  `{{figure::...}}`: `image_container`, `float_*`.
+- Formular/Widget: `formbody`, `widget`,
+  `widget-*`, `mandatory`, `invisible`.
+- Navigation/Listen: `level_*`, `first`, `last`,
+  `active`, `trail`, `submenu`, `even`, `odd`.
+- Tabellen (`row_*`, `col_*`), Kommentare,
+  Breadcrumb/Sitemap.
+- Ausgabe von `standardField` und InsertTags.
+- Redakteur-Klassen via `cssID` / `$this->class`.
+- Vom Redakteur in RTE/`textarea` eingefügtes
+  HTML.
+- Klassen aus Drittanbieter-Bundles (z.B.
+  Rocksolid Columns).
+
+Der Grundsatz oben ist maßgeblich; die Beispiele
+illustrieren nur häufige Fälle.
+=> !Contao-/Fremd-Klassen umbenennen;
+=> !zusätzliche BEM-Wrapper nur, um fremde
+Klassen "einzupassen".
+
+### Bestandselemente (Alt-Konvention)
+
+Ältere LSCEs nutzen die frühere
+Kurznamen-Konvention (kurze Kebab-Case-Namen ohne
+BEM). Sie werden nicht automatisch nachgezogen;
+=> !ungefragte Migration. Bei Änderung eines
+Alt-Elements der dortigen Konvention folgen,
+sofern der Operator nichts anderes verlangt.
 
 ---
 
@@ -101,7 +211,7 @@ Voraussetzung in `config.php`:
     && ($image = $this->getImageObject(
         $this->image, $this->size))
 ): ?>
-    <div class="image-container">
+    <div class="<name>__image">
         <?php $this->insert(
             'picture_default', $image->picture
         ); ?>
@@ -124,7 +234,7 @@ Bildoptionen gesetzt).
     && ($image = $this->getImageObject(
         $this->image, $this->size))
 ): ?>
-    <div class="image-container">
+    <div class="<name>__image">
         <?php if ($image->imageUrl): ?>
             <a href="<?php echo $image->imageUrl; ?>">
         <?php endif; ?>
@@ -148,7 +258,7 @@ Dateiverwaltung.
     && ($image = $this->getImageObject(
         $this->image, $this->size))
 ): ?>
-    <figure class="image-container">
+    <figure class="<name>__figure">
         <?php $this->insert(
             'picture_default', $image->picture
         ); ?>
@@ -169,12 +279,12 @@ Mehrere Bilder aus einem `fileTree` mit
 
 ```php
 <?php if ($this->images): ?>
-    <div class="gallery-container">
+    <div class="<name>__gallery">
         <?php foreach ($this->images as $uuid): ?>
             <?php if ($image = $this->getImageObject(
                 $uuid, $this->gallerySize)
             ): ?>
-                <div class="gallery-item">
+                <div class="<name>__gallery-item">
                     <?php $this->insert(
                         'picture_default',
                         $image->picture
@@ -282,7 +392,7 @@ Optional:
     <?php foreach (
         $this->hyperlinkBoxes as $link
     ): ?>
-        <a class="<?php echo $link->hyperlinkClass
+        <a class="<name>__link <?php echo $link->hyperlinkClass
                 ? $link->hyperlinkClass . ' '
                 : '';
             ?>hyperlink_txt"
@@ -312,7 +422,7 @@ Wiederholungsbedarf), können die Felder direkt
 ```php
 <?php if ($this->hyperlinkText
     || $this->hyperlinkHref): ?>
-    <a href="<?php echo $this->hyperlinkHref; ?>"
+    <a class="<name>__link" href="<?php echo $this->hyperlinkHref; ?>"
         <?php if ($this->hyperlinkNewWindow): ?>
             target="_blank"
             rel="noopener noreferrer"
@@ -434,7 +544,7 @@ Template-Code bei `image`:
 
 ```php
 <?php if ($this->addImage): ?>
-    <figure class="image-container">
+    <figure class="<name>__figure">
         <?php $this->insert(
             'picture_default', $this->picture
         ); ?>

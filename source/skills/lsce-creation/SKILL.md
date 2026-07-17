@@ -330,7 +330,7 @@ siehe `lsce-field-types.md`.
 | Config | `rsce_` + Name + `_config.php` | `rsce_hero-banner_config.php` |
 | SCSS | `_` + Name + `.scss` | `_hero-banner.scss` |
 | Feldnamen | camelCase | `imagePosition` |
-| CSS-Klassen | Kebab-Case | `image-container` |
+| CSS-Klassen (eigenes Markup) | BEM: `block__element--modifier` | `hero-banner__title` |
 
 - Präfix `rsce_` und Suffix `_config` sind
   technisch zwingend (Rocksolid-Erkennung).
@@ -408,12 +408,18 @@ miss:`_lsce.scss` => Operator fragen.
 - => !Inline-Styles im Template.
 - Äußerster Wrapper nutzt `$this->class`
   (enthält automatisch `ce_rsce_<name>` +
-  Redakteur-Klassen). Eigene CSS-Klassen
-  primär auf innere Strukturelemente.
-  Dynamische Steuerungsklassen auf dem
-  äußeren Wrapper sind erlaubt, wenn sie
-  von Backend-Eingaben abhängen (z.B.
-  Positionierung, Layout-Varianten).
+  Redakteur-Klassen). Eigene BEM-Klassen
+  (Block = LSCE-Name) primär auf innere
+  Strukturelemente. Dynamische
+  Steuerungsklassen auf dem äußeren Wrapper
+  sind erlaubt, wenn sie von Backend-Eingaben
+  abhängen (z.B. Positionierung,
+  Layout-Varianten). CSS-Klassen im eigenen
+  Markup folgen BEM; Details,
+  Modifier-Assemblierung und Geltungsbereich
+  (Contao-/Fremd-Klassen unverändert lassen)
+  siehe `lsce-patterns.md`, Abschnitt
+  "CSS-Klassennamens-Schema".
 
 ## Normative Regeln
 
