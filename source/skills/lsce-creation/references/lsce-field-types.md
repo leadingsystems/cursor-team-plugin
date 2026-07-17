@@ -546,9 +546,15 @@ Wann wählen: Ein Bild oder eine Datei pro Feld.
 Pflicht-`eval`:
 - `'fieldType' => 'radio'` (Einzelauswahl)
 - `'filesOnly' => true`
-- `extensions`: Aus dem Projekt ableiten
-  (bestehende LSCEs im selben Projekt
-  als Referenz verwenden).
+- `extensions`: Für ein allgemeines Bildfeld in
+  Contao 5 kanonisch aus dem Core-Parameter
+  `contao.image.valid_extensions` ableiten (siehe
+  Codebeispiel) -- folgt projektweiten Bildtypen
+  ohne Drift. Verlangt der Feldzweck ein engeres
+  oder anderes Set (nur SVG-Icon, PDF-Download,
+  nur Rasterbilder), `extensions` bewusst passend
+  setzen. Bei neuer Contao-Hauptversion Parameter
+  und Idiom prüfen.
 
 ```php
 'image' => [
@@ -557,7 +563,7 @@ Pflicht-`eval`:
     'eval' => [
         'fieldType' => 'radio',
         'filesOnly' => true,
-        'extensions' => '...',
+        'extensions' => implode(',', Contao\System::getContainer()->getParameter('contao.image.valid_extensions')),
         'tl_class' => 'clr',
     ],
 ]
@@ -606,7 +612,7 @@ Optionale `eval`-Ergänzungen:
         'fieldType' => 'checkbox',
         'multiple' => true,
         'filesOnly' => true,
-        'extensions' => '...',
+        'extensions' => implode(',', Contao\System::getContainer()->getParameter('contao.image.valid_extensions')),
         'isGallery' => true,
         'isSortable' => true,
         'tl_class' => 'clr',
