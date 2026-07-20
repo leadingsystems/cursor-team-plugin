@@ -305,6 +305,7 @@ Bestandteile:
 | `label` | Backend-Bezeichnung | `['Hero Banner']` |
 | `types` | Wo verwendbar | `['content']` |
 | `contentCategory` | Backend-Menü-Kategorie | `'LS'` |
+| `moduleCategory` | Modul-Menü-Kategorie (Pflicht, sobald `types` `'module'` enthält) | `'miscellaneous'` |
 | `wrapper` | Wrapper-Verhalten | `['type' => 'none']` |
 | `standardFields` | Contao-Standardfelder | `['cssID']` |
 | `fields` | Die eigentlichen Felder | Array (Kern des LSCE) |
@@ -312,6 +313,10 @@ Bestandteile:
 - `types`: default `['content']`.
   `['content', 'module']` nur wenn das Element
   auch als Frontend-Modul nutzbar sein soll.
+- `moduleCategory`: nur setzen, wenn `types` den Wert
+  `'module'` enthält -- dann aber zwingend. Nicht
+  pauschal mitsetzen. Ordnet das Element im Modul-Menü
+  ein (z.B. `'miscellaneous'`).
 - `contentCategory`: default `'LS'`.
   Andere Werte nur auf Operator-Anforderung.
 - `standardFields`: `['cssID']` immer.
