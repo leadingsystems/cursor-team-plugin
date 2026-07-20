@@ -244,9 +244,9 @@ Zusatzfeldern, Kacheln, Slides).
 Template-Zugriff: Array von Objekten.
 
 ```php
-<?php foreach ($this->hyperlinkBoxes as $item): ?>
+<?php foreach ($this->hyperlinkBoxes as $item) { ?>
     <?php echo $item->hyperlinkText; ?>
-<?php endforeach; ?>
+<?php } ?>
 ```
 
 Unterfelder werden per `->` (Objekt-Zugriff)
@@ -527,9 +527,9 @@ stattdessen `checkboxWizard` verwenden.
 Template-Zugriff: Boolean.
 
 ```php
-<?php if ($this->openNewWindow): ?>
+<?php if ($this->openNewWindow) { ?>
     target="_blank" rel="noopener noreferrer"
-<?php endif; ?>
+<?php } ?>
 ```
 
 #### `fileTree`
@@ -577,11 +577,11 @@ in ein Bild-Objekt wandeln).
 <?php if ($this->image
     && ($image = $this->getImageObject(
         $this->image, $this->size))
-): ?>
+) { ?>
     <?php $this->insert(
         'picture_default', $image->picture
     ); ?>
-<?php endif; ?>
+<?php } ?>
 ```
 
 **Galerie (Mehrfachauswahl):**
@@ -625,18 +625,18 @@ muss einzeln über `getImageObject` aufgelöst
 werden.
 
 ```php
-<?php if ($this->images): ?>
-    <?php foreach ($this->images as $uuid): ?>
+<?php if ($this->images) { ?>
+    <?php foreach ($this->images as $uuid) { ?>
         <?php if ($image = $this->getImageObject(
             $uuid, $this->size)
-        ): ?>
+        ) { ?>
             <?php $this->insert(
                 'picture_default',
                 $image->picture
             ); ?>
-        <?php endif; ?>
-    <?php endforeach; ?>
-<?php endif; ?>
+        <?php } ?>
+    <?php } ?>
+<?php } ?>
 ```
 
 #### `imageSize`
@@ -691,11 +691,11 @@ Wert + Einheit als Kombination.
 Template-Zugriff: Array mit `value` und `unit`.
 
 ```php
-<?php if ($this->headline['value']): ?>
+<?php if ($this->headline['value']) { ?>
     <<?php echo $this->headline['unit']; ?>>
         <?php echo $this->headline['value']; ?>
     </<?php echo $this->headline['unit']; ?>>
-<?php endif; ?>
+<?php } ?>
 ```
 
 #### `pageTree`
@@ -738,13 +738,13 @@ bei denen jeder Eintrag nur ein Textstring ist
 Template-Zugriff: Array von Strings.
 
 ```php
-<?php if ($this->bulletPoints): ?>
+<?php if ($this->bulletPoints) { ?>
     <ul>
-    <?php foreach ($this->bulletPoints as $item): ?>
+    <?php foreach ($this->bulletPoints as $item) { ?>
         <li><?php echo $item; ?></li>
-    <?php endforeach; ?>
+    <?php } ?>
     </ul>
-<?php endif; ?>
+<?php } ?>
 ```
 
 #### `checkboxWizard`
@@ -776,11 +776,11 @@ Template-Zugriff: Array der ausgewählten Keys
 (Rocksolid deserialisiert automatisch).
 
 ```php
-<?php if ($this->features): ?>
-    <?php foreach ($this->features as $feature): ?>
+<?php if ($this->features) { ?>
+    <?php foreach ($this->features as $feature) { ?>
         <?php echo $feature; ?>
-    <?php endforeach; ?>
-<?php endif; ?>
+    <?php } ?>
+<?php } ?>
 ```
 
 ---

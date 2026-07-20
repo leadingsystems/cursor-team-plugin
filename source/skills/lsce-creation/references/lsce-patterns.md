@@ -210,13 +210,13 @@ Voraussetzung in `config.php`:
 <?php if ($this->image
     && ($image = $this->getImageObject(
         $this->image, $this->size))
-): ?>
+) { ?>
     <div class="<name>__image">
         <?php $this->insert(
             'picture_default', $image->picture
         ); ?>
     </div>
-<?php endif; ?>
+<?php } ?>
 ```
 
 `getImageObject` liefert `null` wenn die Datei
@@ -233,19 +233,19 @@ Bildoptionen gesetzt).
 <?php if ($this->image
     && ($image = $this->getImageObject(
         $this->image, $this->size))
-): ?>
+) { ?>
     <div class="<name>__image">
-        <?php if ($image->imageUrl): ?>
+        <?php if ($image->imageUrl) { ?>
             <a href="<?php echo $image->imageUrl; ?>">
-        <?php endif; ?>
+        <?php } ?>
             <?php $this->insert(
                 'picture_default', $image->picture
             ); ?>
-        <?php if ($image->imageUrl): ?>
+        <?php if ($image->imageUrl) { ?>
             </a>
-        <?php endif; ?>
+        <?php } ?>
     </div>
-<?php endif; ?>
+<?php } ?>
 ```
 
 ### Variante 3: Bild mit Caption
@@ -257,18 +257,18 @@ Dateiverwaltung.
 <?php if ($this->image
     && ($image = $this->getImageObject(
         $this->image, $this->size))
-): ?>
+) { ?>
     <figure class="<name>__figure">
         <?php $this->insert(
             'picture_default', $image->picture
         ); ?>
-        <?php if ($image->caption): ?>
+        <?php if ($image->caption) { ?>
             <figcaption>
                 <?php echo $image->caption; ?>
             </figcaption>
-        <?php endif; ?>
+        <?php } ?>
     </figure>
-<?php endif; ?>
+<?php } ?>
 ```
 
 ### Variante 4: Bildgalerie (mehrere Bilder)
@@ -278,22 +278,22 @@ Mehrere Bilder aus einem `fileTree` mit
 `'multiple' => true`.
 
 ```php
-<?php if ($this->images): ?>
+<?php if ($this->images) { ?>
     <div class="<name>__gallery">
-        <?php foreach ($this->images as $uuid): ?>
+        <?php foreach ($this->images as $uuid) { ?>
             <?php if ($image = $this->getImageObject(
                 $uuid, $this->gallerySize)
-            ): ?>
+            ) { ?>
                 <div class="<name>__gallery-item">
                     <?php $this->insert(
                         'picture_default',
                         $image->picture
                     ); ?>
                 </div>
-            <?php endif; ?>
-        <?php endforeach; ?>
+            <?php } ?>
+        <?php } ?>
     </div>
-<?php endif; ?>
+<?php } ?>
 ```
 
 ### Properties des Image-Objekts
@@ -384,11 +384,11 @@ obersten passenden Weg wählen.
   `findByUuid()` akzeptiert den `fileTree`-Rohwert direkt.
 
 ```php
-<?php if (($file = Contao\FilesModel::findByUuid($this->downloadFile)) !== null): ?>
+<?php if (($file = Contao\FilesModel::findByUuid($this->downloadFile)) !== null) { ?>
     <a href="<?php echo $file->path; ?>" download>
         <?php echo $this->linkText; ?>
     </a>
-<?php endif; ?>
+<?php } ?>
 ```
 
 Regeln:
@@ -441,18 +441,18 @@ Optional:
 ### Template-Ausgabe
 
 ```php
-<?php if ($this->hyperlinkBoxes): ?>
+<?php if ($this->hyperlinkBoxes) { ?>
     <?php foreach (
         $this->hyperlinkBoxes as $link
-    ): ?>
+    ) { ?>
         <a class="<name>__link<?php echo $link->hyperlinkClass
                 ? ' ' . $link->hyperlinkClass
                 : ''; ?>"
             href="<?php echo $link->hyperlinkHref; ?>"
-            <?php if ($link->hyperlinkNewWindow): ?>
+            <?php if ($link->hyperlinkNewWindow) { ?>
                 target="_blank"
                 rel="noopener noreferrer"
-            <?php endif; ?>
+            <?php } ?>
             title="<?php echo $link->hyperlinkTitle
                 ?: $link->hyperlinkText; ?>"
         >
@@ -461,8 +461,8 @@ Optional:
                     ?: $link->hyperlinkHref; ?>
             </span>
         </a>
-    <?php endforeach; ?>
-<?php endif; ?>
+    <?php } ?>
+<?php } ?>
 ```
 
 ### Einzelner Link (nicht als Liste)
@@ -473,12 +473,12 @@ Wiederholungsbedarf), können die Felder direkt
 
 ```php
 <?php if ($this->hyperlinkText
-    || $this->hyperlinkHref): ?>
+    || $this->hyperlinkHref) { ?>
     <a class="<name>__link" href="<?php echo $this->hyperlinkHref; ?>"
-        <?php if ($this->hyperlinkNewWindow): ?>
+        <?php if ($this->hyperlinkNewWindow) { ?>
             target="_blank"
             rel="noopener noreferrer"
-        <?php endif; ?>
+        <?php } ?>
         title="<?php echo $this->hyperlinkTitle
             ?: $this->hyperlinkText; ?>"
     >
@@ -487,7 +487,7 @@ Wiederholungsbedarf), können die Felder direkt
                 ?: $this->hyperlinkHref; ?>
         </span>
     </a>
-<?php endif; ?>
+<?php } ?>
 ```
 
 ### Link-Gruppen und Attribute
@@ -595,18 +595,18 @@ Bild-Patterns.
 Template-Code bei `image`:
 
 ```php
-<?php if ($this->addImage): ?>
+<?php if ($this->addImage) { ?>
     <figure class="<name>__figure">
         <?php $this->insert(
             'picture_default', $this->picture
         ); ?>
-        <?php if ($this->caption): ?>
+        <?php if ($this->caption) { ?>
             <figcaption>
                 <?php echo $this->caption; ?>
             </figcaption>
-        <?php endif; ?>
+        <?php } ?>
     </figure>
-<?php endif; ?>
+<?php } ?>
 ```
 
 Rocksolid setzt `$this->addImage`, `$this->picture`,
