@@ -373,7 +373,7 @@ obersten passenden Weg wählen.
 
 - Bild => `getImageObject()` (Image-Studio-Pipeline, responsive
   `<picture>` inkl. Metadaten). Siehe Abschnitt "Bild-Patterns".
-- Nicht-Bild, nur als URL/Pfad in einem Ausgabe-Attribut ->
+- Nicht-Bild, nur als URL/Pfad in einem Ausgabe-Attribut =>
   Insert-Tag `{{file::<uuid>}}`. Contao ersetzt es im
   Frontend-Output durch Pfad/URL; umbenennungssicher, kein PHP
   nötig. Die UUID muss als String vorliegen (liegt sie binär vor,
