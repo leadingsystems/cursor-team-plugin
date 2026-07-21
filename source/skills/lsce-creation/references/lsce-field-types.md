@@ -33,41 +33,17 @@ braucht alle Schlüssel -- `group` und
 
 ### `label`-Format
 
-Vier Varianten:
+Der `label`-Wert ist ein Array. Zwei Formen:
 
-- **Einelementiges Array:** `['Bezeichnung']` --
-  wenn das Label für sich spricht.
-- **Zweielementiges Array:**
-  `['Bezeichnung', 'Hilfetext']` -- zweites
-  Element ist der Beschreibungstext, der im
-  Backend unter dem Feld erscheint. Kann leer
-  sein (`''`), wenn kein Hilfetext nötig ist.
-- **`$GLOBALS`-Referenz:** Bei Verwendung von
-  Contao-Core-Funktionalität aktiv prüfen, ob
-  passende Core-Sprachschlüssel existieren.
-  Einheitliche Labels verbessern die
-  Backend-Konsistenz für Redakteure.
-- **Mehrsprachig:** Array mit Sprachschlüsseln.
-  Rocksolid wählt automatisch die passende
-  Sprache anhand der Backend-Sprache.
+- **Einelementig:** `['Bezeichnung']` -- wenn das
+  Label für sich spricht.
+- **Zweielementig:** `['Bezeichnung', 'Hilfetext']`
+  -- das zweite Element ist der Beschreibungstext,
+  der im Backend unter dem Feld erscheint. Kann
+  leer sein (`''`), wenn kein Hilfetext nötig ist.
 
-Beispiele:
-
-```php
-// Mehrsprachiges Label
-'label' => [
-    'de' => ['Überschrift', 'Hauptüberschrift'],
-    'en' => ['Headline', 'Main headline'],
-],
-```
-
-```php
-// Label aus dem Core wiederverwenden
-'label' => $GLOBALS['TL_LANG']['MSC']['target'],
-
-// Sprachreferenz für Optionslisten
-'reference' => &$GLOBALS['TL_LANG']['MSC'],
-```
+Woher der Label-Text stammt (inline oder
+Sprachdatei), behandelt der nächste Abschnitt.
 
 ### Label-Quelle: Inline oder Sprachdatei
 
@@ -79,19 +55,47 @@ Mechanismen und rankt sie nicht selbst -- so
 wiederholt er die Vorgaben nicht und bleibt bei
 Regeländerungen aktuell.
 
+**Hinweis zu den Beispielen:** Die Feld-Beispiele
+in diesem Dokument verwenden der Kürze halber
+Inline-Labels. Das impliziert keine Präferenz; die
+Label-Quelle richtet sich nach Regel `70` und
+diesem Abschnitt.
+
 - **Inline:** Labels stehen direkt in der
   `config.php`. Zwei Unterfälle mit
   unterschiedlicher Regel-`70`-Wirkung:
   - *Hartkodiert* -- Klartext-Strings, auch die
-    mehrsprachige Rocksolid-Form: redakteur-
-    sichtbar und damit der Regel-`70`-Prüfung
-    unterworfen.
+    mehrsprachige Rocksolid-Form (Array mit
+    Sprachschlüsseln; Rocksolid wählt automatisch
+    die Backend-Sprache): redakteur-sichtbar und
+    damit der Regel-`70`-Prüfung unterworfen.
   - *Core-Schlüssel-Referenz* -- `$GLOBALS['TL_LANG']`
     auf vorhandene Schlüssel: kein Klartext, ein
-    Regel-`70`-konformer Inline-Fall.
+    Regel-`70`-konformer Inline-Fall. Bei
+    Core-Funktionalität aktiv prüfen, ob passende
+    Core-Schlüssel existieren -- einheitliche
+    Labels verbessern die Backend-Konsistenz.
 - **Sprachdatei:** Labels stehen zentral in einer
   Contao-Sprachdatei; die `config.php`
   referenziert nur die Schlüssel.
+
+Inline-Beispiele:
+
+```php
+// Hartkodiert, mehrsprachig (Rocksolid-Form)
+'label' => [
+    'de' => ['Überschrift', 'Hauptüberschrift'],
+    'en' => ['Headline', 'Main headline'],
+],
+```
+
+```php
+// Core-Schlüssel-Referenz (kein Klartext)
+'label' => $GLOBALS['TL_LANG']['MSC']['target'],
+
+// Sprachreferenz für Optionslisten
+'reference' => &$GLOBALS['TL_LANG']['MSC'],
+```
 
 **Ablage und Laden:** Die Sprachdatei liegt unter
 `src/Resources/contao/languages/<lang>/default.php`.
