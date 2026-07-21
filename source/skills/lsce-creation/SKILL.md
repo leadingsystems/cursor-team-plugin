@@ -126,6 +126,12 @@ Fallback:
 default:Contao 5 gilt nur als Fallback nach
 Stufe 3, nicht als blinde Vorannahme.
 
+Granularität: Dieser Skill braucht bewusst nur
+den Major (4 | 5+). Die konkrete Minor-/LTS-
+Default-Version pflegt allein `contao-development`;
+=> !im LSCE-Skill duplizieren (verhindert Drift
+beim LTS-Wechsel).
+
 ## Erstellungspfad
 
 ### Phase 1: Visuelle Analyse
