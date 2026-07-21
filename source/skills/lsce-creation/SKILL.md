@@ -328,6 +328,18 @@ Bestandteile:
 - `standardFields`: `['cssID']` immer.
   Weitere verfügbare: siehe `lsce-patterns.md`.
 
+### Datei-Konvention
+
+Die `config.php` folgt der Contao-Core-Konvention
+für Legacy-Config-/DCA-Dateien: kein
+`declare(strict_types=1)` und lose, untypisierte
+Inline-Callbacks (`options_callback`,
+`save_callback`). Der Core hält es in
+`contao/config` und `contao/dca` genauso; strikte
+Typisierung und `declare` bleiben echten Klassen
+unter `src/` vorbehalten -- etwa der bevorzugten
+Bundle-Klasse eines `save_callback`.
+
 Detaillierte Feldtypen und `eval`-Optionen:
 siehe `lsce-field-types.md`.
 
