@@ -1030,3 +1030,21 @@ Felder, die immer einen Wert haben, brauchen keine
   (immer eine Option selektiert).
 - `checkbox` als reiner Styling-Schalter
   (beide Zustände erzeugen gültige Ausgabe).
+
+## Keine redundanten Casts
+
+Skalare Feldwerte erreichen das Template bereits
+typrichtig (siehe "Template-Zugriff: Zusammenfassung":
+`text`, `textarea`, `select`, `radio`, `url` =>
+`string`). Ein `(string)`-Cast darauf ist redundant
+und bläht das Template auf; => !`(string)` auf
+skalare Feldwerte.
+
+Der einzige Nicht-`string`-Fall dieser Felder ist
+`null`, und nur bei fehlendem Feld (nachträglich in
+die `config.php` aufgenommen, im Datensatz nicht
+vorhanden). `echo` darauf ist warnungsfrei. Ein Guard
+(`?? ''` | `if`) ist nur nötig, wenn der Wert in einen
+Array-Offset, eine Iteration oder eine typisierte
+String-Funktion (z.B. `trim`) fließt;
+=> !pauschaler `?? ''` vor jedem `echo`.
