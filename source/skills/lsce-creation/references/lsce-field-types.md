@@ -69,6 +69,101 @@ Beispiele:
 'reference' => &$GLOBALS['TL_LANG']['MSC'],
 ```
 
+### Label-Quelle: Inline oder Sprachdatei
+
+Labels entstehen technisch auf zwei Wegen. Welcher
+Weg zulässig oder erforderlich ist, bestimmt Regel
+`70`; das Namensraum-Scoping bestimmt
+`contao-development`. Dieser Skill zeigt nur die
+Mechanismen und rankt sie nicht selbst -- so
+wiederholt er die Vorgaben nicht und bleibt bei
+Regeländerungen aktuell.
+
+- **Inline:** Labels stehen direkt in der
+  `config.php`. Zwei Unterfälle mit
+  unterschiedlicher Regel-`70`-Wirkung:
+  - *Hartkodiert* -- Klartext-Strings, auch die
+    mehrsprachige Rocksolid-Form: redakteur-
+    sichtbar und damit der Regel-`70`-Prüfung
+    unterworfen.
+  - *Core-Schlüssel-Referenz* -- `$GLOBALS['TL_LANG']`
+    auf vorhandene Schlüssel: kein Klartext, ein
+    Regel-`70`-konformer Inline-Fall.
+- **Sprachdatei:** Labels stehen zentral in einer
+  Contao-Sprachdatei; die `config.php`
+  referenziert nur die Schlüssel.
+
+**Ablage und Laden:** Die Sprachdatei liegt unter
+`src/Resources/contao/languages/<lang>/default.php`.
+Die `default`-Domäne lädt Contao automatisch bei
+jedem Request; ein `loadLanguageFile` ist nicht
+nötig.
+
+**Struktur eines Eintrags** (das Scoping unter
+`MSC['ls_<bundle>']` stammt normativ aus
+`contao-development`, hier nur zur Veranschaulichung):
+
+```php
+// src/Resources/contao/languages/de/default.php
+$GLOBALS['TL_LANG']['MSC']['ls_<bundle>']['rsce_<element>'] = [
+    'elementLabel' => 'Split-Text Element',
+    'groups' => [
+        'generalSettings' => 'Allgemeine Einstellungen',
+    ],
+    'fields' => [
+        // je Feld: ['Bezeichnung', 'Beschreibung']
+        'headline' => ['Headline', 'Pflichtfeld für die Hauptüberschrift.'],
+        'backgroundColor' => ['Hintergrundfarbe', 'Steuert die Hintergrundfarbe.'],
+    ],
+    'options' => [
+        // Wert => Anzeigetext für select/radio
+        'backgroundColor' => ['white' => 'Weiß', 'lightgray' => 'Hellgrau'],
+    ],
+];
+```
+
+Der Unterschlüssel `['rsce_<element>']` ist
+LSCE-spezifisch. Optional sind `blankOption`
+(leere Auswahl bei `select`) und `itemLabels`
+(`'%s. Kachel'` für Listeneinträge).
+
+**Referenz in der `config.php`:** Einmal einen
+Alias per `&` auf den Element-Eintrag setzen, dann
+die Unterschlüssel verwenden:
+
+```php
+$lang = &$GLOBALS['TL_LANG']['MSC']['ls_<bundle>']['rsce_<element>'];
+
+$arr_config = [
+    'label' => [$lang['elementLabel']],
+    'fields' => [
+        'generalSettingsGroup' => [
+            'label' => [$lang['groups']['generalSettings']],
+            'inputType' => 'group',
+        ],
+        'headline' => [
+            'label' => $lang['fields']['headline'],
+            'inputType' => 'text',
+        ],
+        'backgroundColor' => [
+            'label' => $lang['fields']['backgroundColor'],
+            'inputType' => 'select',
+            'options' => ['white', 'lightgray'],
+            'reference' => $lang['options']['backgroundColor'],
+        ],
+    ],
+];
+```
+
+- `elementLabel` und Gruppen-Labels werden in ein
+  Array gewickelt (`[$lang['elementLabel']]`);
+  Feld-Labels sind bereits das
+  `[Label, Beschreibung]`-Array und werden direkt
+  gesetzt.
+- `reference` bildet die `options`-Werte auf
+  Anzeigetexte ab -- das Gegenstück zu
+  `&$GLOBALS['TL_LANG']['MSC']` im Core.
+
 ### Feld-Level-Keys
 
 Rocksolid speichert LSCE-Daten als serialisiertes

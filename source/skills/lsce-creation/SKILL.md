@@ -327,6 +327,12 @@ Bestandteile:
   Andere Werte nur auf Operator-Anforderung.
 - `standardFields`: `['cssID']` immer.
   Weitere verfügbare: siehe `lsce-patterns.md`.
+- `label`: kann inline in der `config.php` stehen
+  oder aus einer Contao-Sprachdatei kommen. Welcher
+  Weg zulässig oder erforderlich ist, bestimmt Regel
+  `70` -- der Skill rankt die Wege nicht selbst.
+  Mechanismus und Struktur: siehe
+  `lsce-field-types.md`.
 
 ### Datei-Konvention
 
