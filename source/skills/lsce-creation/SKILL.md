@@ -33,6 +33,24 @@ Contao-Projekten mit Rocksolid Custom Elements.
   !LSCE-Dateien erzeugen vor
   Phase-1-Checkpoint-Freigabe.
 
+## Konventionsquelle
+
+Maßgeblich für Stil, Typisierung und Label-Quelle
+sind die Regeln und Skills (Regel `70`,
+`php-development`, `contao-development`), nicht der
+umgebende Projektcode.
+
+- Bestehende LSCEs im Projekt und das Skelett sind
+  Struktur- und Technikvorlagen (Proxy-Muster,
+  Deployment, Pfade).
+- => !aus Bestandselementen oder Skelett Stil-,
+  Label- oder Typisierungskonventionen ableiten.
+- Bestand weicht von den Regeln ab => kein Maßstab.
+  Die Abweichung kann technisch bedingt sein (z.B.
+  hartkodierte Labels bei autonomen Asset-LSCEs;
+  siehe Label-Auslieferungskontext in
+  `lsce-field-types.md`).
+
 ## Schichtenmodell
 
 Die LSCE-`config.php` nutzt die

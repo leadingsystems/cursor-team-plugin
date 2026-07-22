@@ -55,6 +55,21 @@ Mechanismen und rankt sie nicht selbst -- so
 wiederholt er die Vorgaben nicht und bleibt bei
 Regeländerungen aktuell.
 
+**Technische Voraussetzung des Sprachdatei-Wegs:**
+Der Sprachdatei-Weg setzt voraus, dass das LSCE Teil
+einer real installierten Contao-Erweiterung (Bundle)
+ist -- nur dann lädt Contao die Sprachdateien unter
+`src/Resources/contao/languages/` automatisch. Trifft
+das zu (z.B. LSCE in einer Theme-Erweiterung unter
+`.../src/Resources/.../lsce_local/`), sind beide Wege
+verfügbar und der Sprachdatei-Weg gemäß Regel `70`
+erfüllbar. Ist das LSCE dagegen eine autonome
+Asset-Auslieferung ohne Bundle-Kontext (nur als
+Datei-Asset geliefert), existiert kein Auto-Load --
+dann sind hartkodierte Inline-Labels die einzige
+technisch mögliche Form. Den Auslieferungskontext
+daher vor der Label-Quelle bestimmen.
+
 **Hinweis zu den Beispielen:** Die Feld-Beispiele
 in diesem Dokument verwenden der Kürze halber
 Inline-Labels. Das impliziert keine Präferenz; die
