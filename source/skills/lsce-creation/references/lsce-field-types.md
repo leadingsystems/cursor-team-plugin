@@ -404,6 +404,16 @@ Wann wählen: Wenn ein Contao-Standardfeld
 nicht am Standard-Platz erscheinen soll,
 sondern zwischen eigenen Feldern.
 
+Präferenz: Entspricht die Feldrolle einem
+Contao-Standardfeld (Headline mit H-Tag-Wahl,
+Bild mit Größe, Text), `standardField` gegenüber
+einem nachgebauten Eigenfeld bevorzugen -- das
+Standardverhalten inkl. Affordances (z.B. die
+H-Tag-Wahl) kommt ohne Nachbau mit. Ein reduziertes
+Eigenfeld (z.B. `text` mit fest kodiertem H-Tag)
+ist nur richtig, wenn die Standard-Affordance
+bewusst nicht gewünscht ist.
+
 Der Feldname muss dem tatsächlichen
 DCA-Feldnamen in `tl_content`/`tl_module`
 entsprechen -- nicht den Bezeichnungen aus dem

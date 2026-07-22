@@ -588,6 +588,20 @@ Beim Einsatz beachten:
 - Erkannte Texte aus Screenshots =>
   !Standardwerte in `config.php`;
   default: leere Felder.
+- Das Prinzip vermeidet zusätzliche oder
+  erfundene Optionen; es rechtfertigt nicht, dass
+  Standard-Affordances entfernt werden, die ein
+  Contao-Standardfeld von sich aus mitbringt
+  (z.B. die H-Tag-Wahl einer Headline).
+- Rolle entspricht einem Contao-Standardfeld
+  (Headline, Bild + Größe, Text) => `standardField`
+  bevorzugen, statt ein reduziertes Eigenfeld
+  nachzubauen -- das Standardverhalten inkl.
+  Affordances kommt ohne Nachbau mit. Ein Eigenfeld
+  mit fest kodiertem Verhalten (z.B. `text` mit
+  fixem H-Tag) ist Funktionsverlust, kein
+  Minimalismus. Details: `lsce-field-types.md`,
+  Abschnitt `standardField`.
 
 ### Feldreihenfolge
 
