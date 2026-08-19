@@ -1,0 +1,51 @@
+---
+description: Auflösung von @-Referenzen des Operators im Chat-Input. Workspace-Root zuerst, keine Fernsuche.
+alwaysApply: true
+---
+
+# Operator-Referenzen (`@<token>`) auflösen
+
+ctx: `@<token>`-Referenzen im Operator-Input.
+Der Operator zeigt damit auf ein konkretes Artefakt
+im Workspace (Datei oder Verzeichnis).
+
+## Regeln
+
+- `@<token>` => default:Artefakt im Workspace;
+  => !Konzept-/Produktname; => !externes Repository.
+- req:Auflösung vor jeder Aktion, die sich auf das
+  referenzierte Artefakt stützt.
+
+## Auflösungsreihenfolge
+
+Erste passende Stufe gilt; nächste Stufe nur bei
+Nicht-Treffer der vorherigen.
+
+1. Token enthält `/` => als relativer Pfad ab
+   Workspace-Root interpretieren & per Shell prüfen
+   (`Test-Path <workspace-root>/<token>`).
+2. Token ohne `/` => Workspace-Root per Shell
+   auflisten (`Get-ChildItem <workspace-root>`) &
+   exakten Namen (Datei | Verzeichnis) suchen.
+3. miss:Treffer => Tiefe 1-2 unter Workspace-Root
+   prüfen, bevor breitere Suche begonnen wird.
+4. miss:Treffer auch dann => STOP & Operator fragen;
+   => !Fernsuche auf anderen Laufwerken oder im
+   Home-Verzeichnis.
+
+## Mehrdeutigkeit
+
+- Mehrere Treffer (gleicher Name an mehreren Stellen)
+  ? => STOP & Operator fragen, welcher gemeint ist.
+- Token ohne `/` & Treffer = Verzeichnis: direkt
+  verwenden; => !unter dem Verzeichnis weitersuchen,
+  sofern nicht in der Operator-Anweisung verlangt.
+
+## Anti-Muster
+
+- `@<token>` => !sofortige Fernsuche
+  (`Recurse`/`-Depth > 2` auf Workspace-fremden Pfaden).
+- `@<token>` => !Interpretation als bloßer Bezeichner
+  ohne vorherige Workspace-Prüfung.
+- Workspace-Root unklar ? => STOP & Operator fragen;
+  => !Heuristik über Pfad-Bestandteile.

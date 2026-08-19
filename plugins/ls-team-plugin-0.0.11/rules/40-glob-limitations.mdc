@@ -1,0 +1,45 @@
+---
+description: Glob nicht für Existenzprüfungen verwenden. Shell oder Read für Verzeichnisse, versteckte Dateien und bekannte Pfade.
+alwaysApply: true
+---
+
+# Glob-Blindstellen: Existenzprüfungen nicht per Glob
+
+ctx:Existenzprüfung eines Pfades (Verzeichnis,
+versteckte Datei/Ordner). Glob findet diese nicht;
+Shell oder Read verwenden.
+
+## Blindstellen
+
+- Leere Verzeichnisse: nie gefunden (Glob liefert nur
+  Dateien).
+- Versteckte Dateien/Ordner (`.`-Prefix): von Standard-
+  Patterns (`**/*`, `*.md`) nicht erfasst.
+- Glob "0 Treffer" != Nichtexistenz.
+- Auswirkungen: `.git` nicht erkannt => Bearbeitungen
+  fälschlich verweigert; `.framework-version` nicht erkannt
+  => PCF-Projekt nicht identifiziert; `.gitkeep`/leere
+  Verzeichnisse nicht erkannt.
+
+## Regeln
+
+- Existenzprüfung => Shell | Read; => !Glob
+- Bekannter Pfad (`.git`, `.env`, `.framework-version`)
+  => direkt per Shell | Read prüfen
+- Glob "0 Treffer" & Ziel = Verzeichnis | versteckte Datei
+  => Gegenprüfung per Shell
+- Shell-Beispiele: `Test-Path <pfad>` (PowerShell),
+  `ls -la <pfad>` (Bash), `Get-ChildItem -Force <pfad>`
+  (Verzeichnisinhalt inkl. versteckter Einträge).
+  Einzelne bekannte Datei: Read-Tool (Fehler = nicht
+  vorhanden).
+
+## Werkzeugwahl
+
+| Aufgabe                     | Werkzeug        |
+|-----------------------------|-----------------|
+| Dateien nach Muster suchen  | Glob            |
+| Verzeichnis-Existenz prüfen | Shell           |
+| Versteckte Datei prüfen     | Shell | Read    |
+| Leeres Verzeichnis prüfen   | Shell           |
+| Bekannten Pfad prüfen       | Shell | Read    |
